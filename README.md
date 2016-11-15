@@ -1,7 +1,11 @@
 # Stimdb1
 
-This README outlines the details of collaborating on this Ember application.
-A short introduction of this app could easily go here.
+This is intended to be a working mockup of the stimulus database; it will hopefully soon have a small set of contributors, movies, etc.; and we'll work on connecting the currently coded movies up with the firebase.app backend.
+
+See stimdb1.firebaseapp.com for the currently deployed version...
+
+
+Rest of this is the Ember-generated description of prerequisites for working on the project
 
 ## Prerequisites
 

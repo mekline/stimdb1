@@ -1,0 +1,102 @@
+Open stimulus database
+
+
+
+ simpler pages the website should have
+
+
+people
+
+how to contribute to this site (instructions)
+
+A big master page with the 'tree' of stimulus schema
+
+Tools for making your json files
+
+A list of all the stim sets that we know about
+
+a hard-coded version of that last one
+
+stimsets
+
+three hard-coded example stim-list instances, to show what it should actually look like
+
+cbaudio
+
+cbmovies
+
+eventsmp
+
+a fake search page
+
+which leads to...
+
+a fake results page
+
+a fake page to preview a single stim
+
+
+
+***Stim sets
+List of stimulus sets
+
+    CBMovies
+    CBAudio
+    EventsMP
+
+each stimset should be clickable and activate the corresponding page. (ie. search & return all stimuli from that set) Example:
+
+ CBMovies
+
+The current list of stimsets should be scraped from OSF? Currently hard-coded in stimsets.js
+
+This page should also give the citation of the stimulus set, and probably link directly to the corresponding OSF repository if people want to get over to the project page (i.e. to learn general info about how the authors made it, what it was for, etc.)
+
+****
+CB Sounds
+
+    CBaudio1
+    CBaudio2
+    CBaudio3
+    CBaudio4
+
+    hardcoded link to view a stim!
+
+each stim should be clickable and lead to the corresponding viewstim page. On this page, we should load only thumbnails/small previews of stimuli.
+
+And there should be a button to download this list of stim + its json info file + the info file of its parent stimlist(s)
+
+ *****a fake search page
+
+pretend to search!
+
+Rough idea for search: you can select (or not) what type of stimuli you want from a list (e.g. videos, Events, etc.). After you choose those types, you can see a drop-down of attributes those things have. Check off the ones you want to give values for, get a series of input boxes you can fill out.
+
+Question: how deep does this go? Some json fields by their natures have as small set of values, some have infinite. Probably we should pick a smallish list of the ones we (dynamically?) provide; an endless list is usually not helpful.
+
+Also/or should be able to search in an unrestricted way through those json files for arbitrary text. Extreme version, you should be able to search the entire world of stimuli for stims that mention the word 'fish' somehwere.
+
+***results-of-search page
+
+    this
+    is
+    actually
+    a
+    static
+    list
+
+    hardcoded link to view a stim!
+
+each stim should be clickable and lead to the corresponding viewstim page. On this page, we should load only thumbnails/small previews of stimuli.
+
+And there should be a button to download this list of stim + its json info file + the info file of its parent stimlist(s)
+
+(Everything above this pt is currently just a hard-coded list. But this is the real page that should be generated when we search (even if we searched for the exact contents of 1 stimset.)
+
+*****Show a single stim named hardcodedStim
+
+here we should be able to print out some standard set of info, including its filename, top-level type of stimulus, author, etc.
+
+Big media files can get loaded at this point for viewing. Probably want the option to download just this stim + its info here too.
+
+This is the route where we display just 1 stim! structurally I am not sure if it's necessary? 

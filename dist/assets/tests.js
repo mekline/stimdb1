@@ -18,13 +18,31 @@ define('stimdb1/tests/app.jshint', ['exports'], function (exports) {
     assert.ok(true, 'app.js should pass jshint.');
   });
 });
+define('stimdb1/tests/components/creator-item-form.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | components/creator-item-form.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'components/creator-item-form.js should pass jshint.');
+  });
+});
+define('stimdb1/tests/components/creator-item.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | components/creator-item.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'components/creator-item.js should pass jshint.');
+  });
+});
 define('stimdb1/tests/controllers/contact.jshint', ['exports'], function (exports) {
   'use strict';
 
   QUnit.module('JSHint | controllers/contact.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(false, 'controllers/contact.js should pass jshint.\ncontrollers/contact.js: line 26, col 31, \'response\' is defined but never used.\n\n1 error');
+    assert.ok(false, 'controllers/contact.js should pass jshint.\ncontrollers/contact.js: line 27, col 31, \'response\' is defined but never used.\n\n1 error');
   });
 });
 define('stimdb1/tests/helpers/create-offline-ref', ['exports', 'firebase'], function (exports, _firebase) {
@@ -287,6 +305,295 @@ define('stimdb1/tests/helpers/unstub-firebase', ['exports', 'firebase'], functio
     }
   }
 });
+define('stimdb1/tests/integration/components/creator-item-form-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
+
+  (0, _emberQunit.moduleForComponent)('creator-item-form', 'Integration | Component | creator item form', {
+    integration: true
+  });
+
+  (0, _emberQunit.test)('it renders', function (assert) {
+    // Set any properties with this.set('myProperty', 'value');
+    // Handle any actions with this.on('myAction', function(val) { ... });
+
+    this.render(Ember.HTMLBars.template((function () {
+      return {
+        meta: {
+          'revision': 'Ember@2.8.2',
+          'loc': {
+            'source': null,
+            'start': {
+              'line': 1,
+              'column': 0
+            },
+            'end': {
+              'line': 1,
+              'column': 21
+            }
+          }
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createComment('');
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+          dom.insertBoundary(fragment, 0);
+          dom.insertBoundary(fragment, null);
+          return morphs;
+        },
+        statements: [['content', 'creator-item-form', ['loc', [null, [1, 0], [1, 21]]], 0, 0, 0, 0]],
+        locals: [],
+        templates: []
+      };
+    })()));
+
+    assert.equal(this.$().text().trim(), '');
+
+    // Template block usage:
+    this.render(Ember.HTMLBars.template((function () {
+      var child0 = (function () {
+        return {
+          meta: {
+            'revision': 'Ember@2.8.2',
+            'loc': {
+              'source': null,
+              'start': {
+                'line': 2,
+                'column': 4
+              },
+              'end': {
+                'line': 4,
+                'column': 4
+              }
+            }
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode('      template block text\n');
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes() {
+            return [];
+          },
+          statements: [],
+          locals: [],
+          templates: []
+        };
+      })();
+
+      return {
+        meta: {
+          'revision': 'Ember@2.8.2',
+          'loc': {
+            'source': null,
+            'start': {
+              'line': 1,
+              'column': 0
+            },
+            'end': {
+              'line': 5,
+              'column': 2
+            }
+          }
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode('\n');
+          dom.appendChild(el0, el1);
+          var el1 = dom.createComment('');
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode('  ');
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+          return morphs;
+        },
+        statements: [['block', 'creator-item-form', [], [], 0, null, ['loc', [null, [2, 4], [4, 26]]]]],
+        locals: [],
+        templates: [child0]
+      };
+    })()));
+
+    assert.equal(this.$().text().trim(), 'template block text');
+  });
+});
+define('stimdb1/tests/integration/components/creator-item-form-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | integration/components/creator-item-form-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'integration/components/creator-item-form-test.js should pass jshint.');
+  });
+});
+define('stimdb1/tests/integration/components/creator-item-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
+
+  (0, _emberQunit.moduleForComponent)('creator-item', 'Integration | Component | creator item', {
+    integration: true
+  });
+
+  (0, _emberQunit.test)('it renders', function (assert) {
+    // Set any properties with this.set('myProperty', 'value');
+    // Handle any actions with this.on('myAction', function(val) { ... });
+
+    this.render(Ember.HTMLBars.template((function () {
+      return {
+        meta: {
+          'revision': 'Ember@2.8.2',
+          'loc': {
+            'source': null,
+            'start': {
+              'line': 1,
+              'column': 0
+            },
+            'end': {
+              'line': 1,
+              'column': 16
+            }
+          }
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createComment('');
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+          dom.insertBoundary(fragment, 0);
+          dom.insertBoundary(fragment, null);
+          return morphs;
+        },
+        statements: [['content', 'creator-item', ['loc', [null, [1, 0], [1, 16]]], 0, 0, 0, 0]],
+        locals: [],
+        templates: []
+      };
+    })()));
+
+    assert.equal(this.$().text().trim(), '');
+
+    // Template block usage:
+    this.render(Ember.HTMLBars.template((function () {
+      var child0 = (function () {
+        return {
+          meta: {
+            'revision': 'Ember@2.8.2',
+            'loc': {
+              'source': null,
+              'start': {
+                'line': 2,
+                'column': 4
+              },
+              'end': {
+                'line': 4,
+                'column': 4
+              }
+            }
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode('      template block text\n');
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes() {
+            return [];
+          },
+          statements: [],
+          locals: [],
+          templates: []
+        };
+      })();
+
+      return {
+        meta: {
+          'revision': 'Ember@2.8.2',
+          'loc': {
+            'source': null,
+            'start': {
+              'line': 1,
+              'column': 0
+            },
+            'end': {
+              'line': 5,
+              'column': 2
+            }
+          }
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode('\n');
+          dom.appendChild(el0, el1);
+          var el1 = dom.createComment('');
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode('  ');
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+          return morphs;
+        },
+        statements: [['block', 'creator-item', [], [], 0, null, ['loc', [null, [2, 4], [4, 21]]]]],
+        locals: [],
+        templates: [child0]
+      };
+    })()));
+
+    assert.equal(this.$().text().trim(), 'template block text');
+  });
+});
+define('stimdb1/tests/integration/components/creator-item-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | integration/components/creator-item-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'integration/components/creator-item-test.js should pass jshint.');
+  });
+});
+define('stimdb1/tests/models/creator.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | models/creator.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'models/creator.js should pass jshint.');
+  });
+});
 define('stimdb1/tests/models/message.jshint', ['exports'], function (exports) {
   'use strict';
 
@@ -294,6 +601,24 @@ define('stimdb1/tests/models/message.jshint', ['exports'], function (exports) {
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'models/message.js should pass jshint.');
+  });
+});
+define('stimdb1/tests/models/stimset.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | models/stimset.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'models/stimset.js should pass jshint.');
+  });
+});
+define('stimdb1/tests/models/stimulus.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | models/stimulus.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'models/stimulus.js should pass jshint.');
   });
 });
 define('stimdb1/tests/resolver.jshint', ['exports'], function (exports) {
@@ -323,6 +648,15 @@ define('stimdb1/tests/routes/about.jshint', ['exports'], function (exports) {
     assert.ok(true, 'routes/about.js should pass jshint.');
   });
 });
+define('stimdb1/tests/routes/admin/messages.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | routes/admin/messages.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'routes/admin/messages.js should pass jshint.');
+  });
+});
 define('stimdb1/tests/routes/contact.jshint', ['exports'], function (exports) {
   'use strict';
 
@@ -330,6 +664,33 @@ define('stimdb1/tests/routes/contact.jshint', ['exports'], function (exports) {
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'routes/contact.js should pass jshint.');
+  });
+});
+define('stimdb1/tests/routes/creators/edit.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | routes/creators/edit.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'routes/creators/edit.js should pass jshint.');
+  });
+});
+define('stimdb1/tests/routes/creators/listall.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | routes/creators/listall.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'routes/creators/listall.js should pass jshint.');
+  });
+});
+define('stimdb1/tests/routes/creators/new.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | routes/creators/new.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'routes/creators/new.js should pass jshint.');
   });
 });
 define('stimdb1/tests/test-helper', ['exports', 'stimdb1/tests/helpers/resolver', 'ember-qunit'], function (exports, _stimdb1TestsHelpersResolver, _emberQunit) {
@@ -367,6 +728,28 @@ define('stimdb1/tests/unit/controllers/contact-test.jshint', ['exports'], functi
     assert.ok(true, 'unit/controllers/contact-test.js should pass jshint.');
   });
 });
+define('stimdb1/tests/unit/models/creator-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
+
+  (0, _emberQunit.moduleForModel)('creator', 'Unit | Model | creator', {
+    // Specify the other units that are required for this test.
+    needs: ['model:stimset']
+  });
+
+  (0, _emberQunit.test)('it exists', function (assert) {
+    var model = this.subject();
+    // let store = this.store();
+    assert.ok(!!model);
+  });
+});
+define('stimdb1/tests/unit/models/creator-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | unit/models/creator-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/models/creator-test.js should pass jshint.');
+  });
+});
 define('stimdb1/tests/unit/models/message-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
 
   (0, _emberQunit.moduleForModel)('message', 'Unit | Model | message', {
@@ -389,6 +772,50 @@ define('stimdb1/tests/unit/models/message-test.jshint', ['exports'], function (e
     assert.ok(true, 'unit/models/message-test.js should pass jshint.');
   });
 });
+define('stimdb1/tests/unit/models/stimset-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
+
+  (0, _emberQunit.moduleForModel)('stimset', 'Unit | Model | stimset', {
+    // Specify the other units that are required for this test.
+    needs: ['model:stimulu', 'model:creator']
+  });
+
+  (0, _emberQunit.test)('it exists', function (assert) {
+    var model = this.subject();
+    // let store = this.store();
+    assert.ok(!!model);
+  });
+});
+define('stimdb1/tests/unit/models/stimset-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | unit/models/stimset-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/models/stimset-test.js should pass jshint.');
+  });
+});
+define('stimdb1/tests/unit/models/stimulus-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
+
+  (0, _emberQunit.moduleForModel)('stimulus', 'Unit | Model | stimulus', {
+    // Specify the other units that are required for this test.
+    needs: ['model:stimset']
+  });
+
+  (0, _emberQunit.test)('it exists', function (assert) {
+    var model = this.subject();
+    // let store = this.store();
+    assert.ok(!!model);
+  });
+});
+define('stimdb1/tests/unit/models/stimulus-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | unit/models/stimulus-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/models/stimulus-test.js should pass jshint.');
+  });
+});
 define('stimdb1/tests/unit/routes/about-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
 
   (0, _emberQunit.moduleFor)('route:about', 'Unit | Route | about', {
@@ -408,6 +835,27 @@ define('stimdb1/tests/unit/routes/about-test.jshint', ['exports'], function (exp
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'unit/routes/about-test.js should pass jshint.');
+  });
+});
+define('stimdb1/tests/unit/routes/admin/messages-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
+
+  (0, _emberQunit.moduleFor)('route:admin/messages', 'Unit | Route | admin/messages', {
+    // Specify the other units that are required for this test.
+    // needs: ['controller:foo']
+  });
+
+  (0, _emberQunit.test)('it exists', function (assert) {
+    var route = this.subject();
+    assert.ok(route);
+  });
+});
+define('stimdb1/tests/unit/routes/admin/messages-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | unit/routes/admin/messages-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/routes/admin/messages-test.js should pass jshint.');
   });
 });
 define('stimdb1/tests/unit/routes/contact-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {

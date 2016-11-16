@@ -9,6 +9,22 @@ const Router = Ember.Router.extend({
 Router.map(function() {
   this.route('about');
   this.route('contact');
+
+  this.route('admin', function() {
+    this.route('messages');
+  });
+
+  this.route('creators', function() {
+    this.route('new');
+    this.route('listall');
+    this.route('edit', { path: '/:creator_id/edit' });
+  });
+
+  this.route('stimsets', function() {
+    this.route('new');
+    this.route('listall');
+  });
+
 });
 
 export default Router;

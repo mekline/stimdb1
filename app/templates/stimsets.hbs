@@ -1,0 +1,15 @@
+<!-- app/templates/stimsets.hbs -->
+
+<h1>Stimulus Sets</h1>
+
+<p> Panels showing each stimulus set with basic details. These should show a 'snapshot'
+/ sample item to give people a flavor of what's there.</p>
+
+<div class="well">
+  <ul class="nav nav-pills">
+    {{#link-to 'stimsets.listall' tagName="li"}}<a href="">List all</a>{{/link-to}}
+    {{#link-to 'stimsets.new' tagName="li"}}<a href="">Add new</a>{{/link-to}}
+  </ul>
+</div>
+
+{{outlet}}

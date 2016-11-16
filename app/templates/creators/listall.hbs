@@ -1,0 +1,20 @@
+<!-- app/templates/creators/listall.hbs -->
+
+
+<div class="row">
+  {{#each model as |creator|}}
+    <div class="col-md-4">
+
+      {{#creator-item item=creator}}
+
+        {{#link-to 'creators.edit' creator.id class='btn btn-success btn-xs'}}Edit{{/link-to}}
+
+        <button class="btn btn-danger btn-xs" {{action 'deleteCreator' creator}}>Delete</button>
+
+      {{/creator-item}}
+
+    </div>
+
+{{/each}}
+</div>
+

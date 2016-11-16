@@ -68795,6 +68795,316 @@ define("ember-cli-app-version/templates/app-version", ["exports"], function (exp
     };
   })());
 });
+define('ember-cli-smart-link-to/components/smart-link-to', ['exports', 'ember', 'ember-cli-smart-link-to/templates/components/smart-link-to'], function (exports, _ember, _emberCliSmartLinkToTemplatesComponentsSmartLinkTo) {
+  'use strict';
+
+  exports['default'] = _ember['default'].Component.extend({
+    layout: _emberCliSmartLinkToTemplatesComponentsSmartLinkTo['default'],
+    cssClass: '',
+    target: '',
+    isRoute: _ember['default'].computed('link', function () {
+      return _ember['default'].getOwner(this).hasRegistration('route:' + this.get('link'));
+    })
+  });
+});
+define("ember-cli-smart-link-to/templates/components/smart-link-to", ["exports"], function (exports) {
+  "use strict";
+
+  exports["default"] = Ember.HTMLBars.template((function () {
+    var child0 = (function () {
+      var child0 = (function () {
+        var child0 = (function () {
+          return {
+            meta: {
+              "revision": "Ember@2.8.2",
+              "loc": {
+                "source": null,
+                "start": {
+                  "line": 3,
+                  "column": 4
+                },
+                "end": {
+                  "line": 5,
+                  "column": 4
+                }
+              },
+              "moduleName": "modules/ember-cli-smart-link-to/templates/components/smart-link-to.hbs"
+            },
+            isEmpty: false,
+            arity: 0,
+            cachedFragment: null,
+            hasRendered: false,
+            buildFragment: function buildFragment(dom) {
+              var el0 = dom.createDocumentFragment();
+              var el1 = dom.createTextNode("      ");
+              dom.appendChild(el0, el1);
+              var el1 = dom.createComment("");
+              dom.appendChild(el0, el1);
+              var el1 = dom.createComment("");
+              dom.appendChild(el0, el1);
+              var el1 = dom.createTextNode("\n");
+              dom.appendChild(el0, el1);
+              return el0;
+            },
+            buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+              var morphs = new Array(2);
+              morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+              morphs[1] = dom.createMorphAt(fragment, 2, 2, contextualElement);
+              return morphs;
+            },
+            statements: [["content", "yield", ["loc", [null, [4, 6], [4, 15]]], 0, 0, 0, 0], ["content", "label", ["loc", [null, [4, 15], [4, 24]]], 0, 0, 0, 0]],
+            locals: [],
+            templates: []
+          };
+        })();
+        return {
+          meta: {
+            "revision": "Ember@2.8.2",
+            "loc": {
+              "source": null,
+              "start": {
+                "line": 2,
+                "column": 2
+              },
+              "end": {
+                "line": 6,
+                "column": 2
+              }
+            },
+            "moduleName": "modules/ember-cli-smart-link-to/templates/components/smart-link-to.hbs"
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createComment("");
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+            dom.insertBoundary(fragment, 0);
+            dom.insertBoundary(fragment, null);
+            return morphs;
+          },
+          statements: [["block", "link-to", [["get", "link", ["loc", [null, [3, 15], [3, 19]]], 0, 0, 0, 0]], ["class", ["subexpr", "@mut", [["get", "cssClass", ["loc", [null, [3, 26], [3, 34]]], 0, 0, 0, 0]], [], [], 0, 0], "target", ["subexpr", "@mut", [["get", "target", ["loc", [null, [3, 42], [3, 48]]], 0, 0, 0, 0]], [], [], 0, 0]], 0, null, ["loc", [null, [3, 4], [5, 16]]]]],
+          locals: [],
+          templates: [child0]
+        };
+      })();
+      var child1 = (function () {
+        var child0 = (function () {
+          return {
+            meta: {
+              "revision": "Ember@2.8.2",
+              "loc": {
+                "source": null,
+                "start": {
+                  "line": 7,
+                  "column": 4
+                },
+                "end": {
+                  "line": 9,
+                  "column": 4
+                }
+              },
+              "moduleName": "modules/ember-cli-smart-link-to/templates/components/smart-link-to.hbs"
+            },
+            isEmpty: false,
+            arity: 0,
+            cachedFragment: null,
+            hasRendered: false,
+            buildFragment: function buildFragment(dom) {
+              var el0 = dom.createDocumentFragment();
+              var el1 = dom.createTextNode("      ");
+              dom.appendChild(el0, el1);
+              var el1 = dom.createComment("");
+              dom.appendChild(el0, el1);
+              var el1 = dom.createComment("");
+              dom.appendChild(el0, el1);
+              var el1 = dom.createTextNode("\n");
+              dom.appendChild(el0, el1);
+              return el0;
+            },
+            buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+              var morphs = new Array(2);
+              morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+              morphs[1] = dom.createMorphAt(fragment, 2, 2, contextualElement);
+              return morphs;
+            },
+            statements: [["content", "yield", ["loc", [null, [8, 6], [8, 15]]], 0, 0, 0, 0], ["content", "label", ["loc", [null, [8, 15], [8, 24]]], 0, 0, 0, 0]],
+            locals: [],
+            templates: []
+          };
+        })();
+        return {
+          meta: {
+            "revision": "Ember@2.8.2",
+            "loc": {
+              "source": null,
+              "start": {
+                "line": 6,
+                "column": 2
+              },
+              "end": {
+                "line": 10,
+                "column": 2
+              }
+            },
+            "moduleName": "modules/ember-cli-smart-link-to/templates/components/smart-link-to.hbs"
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createComment("");
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+            dom.insertBoundary(fragment, 0);
+            dom.insertBoundary(fragment, null);
+            return morphs;
+          },
+          statements: [["block", "link-to", [["get", "link", ["loc", [null, [7, 15], [7, 19]]], 0, 0, 0, 0]], ["class", ["subexpr", "@mut", [["get", "cssClass", ["loc", [null, [7, 26], [7, 34]]], 0, 0, 0, 0]], [], [], 0, 0]], 0, null, ["loc", [null, [7, 4], [9, 16]]]]],
+          locals: [],
+          templates: [child0]
+        };
+      })();
+      return {
+        meta: {
+          "revision": "Ember@2.8.2",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 1,
+              "column": 0
+            },
+            "end": {
+              "line": 11,
+              "column": 0
+            }
+          },
+          "moduleName": "modules/ember-cli-smart-link-to/templates/components/smart-link-to.hbs"
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createComment("");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+          dom.insertBoundary(fragment, 0);
+          dom.insertBoundary(fragment, null);
+          return morphs;
+        },
+        statements: [["block", "if", [["get", "target", ["loc", [null, [2, 8], [2, 14]]], 0, 0, 0, 0]], [], 0, 1, ["loc", [null, [2, 2], [10, 9]]]]],
+        locals: [],
+        templates: [child0, child1]
+      };
+    })();
+    var child1 = (function () {
+      return {
+        meta: {
+          "revision": "Ember@2.8.2",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 11,
+              "column": 0
+            },
+            "end": {
+              "line": 13,
+              "column": 0
+            }
+          },
+          "moduleName": "modules/ember-cli-smart-link-to/templates/components/smart-link-to.hbs"
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("  ");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("a");
+          var el2 = dom.createComment("");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createComment("");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var element0 = dom.childAt(fragment, [1]);
+          var morphs = new Array(5);
+          morphs[0] = dom.createAttrMorph(element0, 'href');
+          morphs[1] = dom.createAttrMorph(element0, 'class');
+          morphs[2] = dom.createAttrMorph(element0, 'target');
+          morphs[3] = dom.createMorphAt(element0, 0, 0);
+          morphs[4] = dom.createMorphAt(element0, 1, 1);
+          return morphs;
+        },
+        statements: [["attribute", "href", ["concat", [["get", "link", ["loc", [null, [12, 13], [12, 17]]], 0, 0, 0, 0]], 0, 0, 0, 0, 0], 0, 0, 0, 0], ["attribute", "class", ["concat", [["get", "cssClass", ["loc", [null, [12, 30], [12, 38]]], 0, 0, 0, 0]], 0, 0, 0, 0, 0], 0, 0, 0, 0], ["attribute", "target", ["concat", [["get", "target", ["loc", [null, [12, 52], [12, 58]]], 0, 0, 0, 0]], 0, 0, 0, 0, 0], 0, 0, 0, 0], ["content", "yield", ["loc", [null, [12, 62], [12, 71]]], 0, 0, 0, 0], ["content", "label", ["loc", [null, [12, 71], [12, 80]]], 0, 0, 0, 0]],
+        locals: [],
+        templates: []
+      };
+    })();
+    return {
+      meta: {
+        "revision": "Ember@2.8.2",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 14,
+            "column": 0
+          }
+        },
+        "moduleName": "modules/ember-cli-smart-link-to/templates/components/smart-link-to.hbs"
+      },
+      isEmpty: false,
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var morphs = new Array(1);
+        morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+        dom.insertBoundary(fragment, 0);
+        dom.insertBoundary(fragment, null);
+        return morphs;
+      },
+      statements: [["block", "if", [["get", "isRoute", ["loc", [null, [1, 6], [1, 13]]], 0, 0, 0, 0]], [], 0, 1, ["loc", [null, [1, 0], [13, 7]]]]],
+      locals: [],
+      templates: [child0, child1]
+    };
+  })());
+});
 define("ember-data/-private/adapters", ["exports", "ember-data/adapters/json-api", "ember-data/adapters/rest"], function (exports, _emberDataAdaptersJsonApi, _emberDataAdaptersRest) {
   /**
     @module ember-data

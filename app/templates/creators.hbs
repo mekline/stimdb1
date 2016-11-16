@@ -1,0 +1,14 @@
+<!-- app/templates/creators.hbs -->
+
+<h1>People</h1>
+
+<p> For now this will just be a list of stimulus-set creators we are putting in the mockup. </p>
+
+<div class="well">
+  <ul class="nav nav-pills">
+    {{#link-to 'creators.listall' tagName="li"}}<a href="">List all</a>{{/link-to}}
+    {{#link-to 'creators.new' tagName="li"}}<a href="">Add new</a>{{/link-to}}
+  </ul>
+</div>
+
+{{outlet}}

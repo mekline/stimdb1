@@ -4,6 +4,7 @@ export default Ember.Controller.extend({
 
   emailAddress: '',
   message: '',
+  responseMessage:'',
 
 
   isValidEmail: Ember.computed.match('emailAddress', /^.+@.+\..+$/),
@@ -24,8 +25,8 @@ export default Ember.Controller.extend({
       });
 
       newMessage.save().then((response)=> {
-     	this.set('responseMessage', `Thank you! Your message has been sent and your email saved: ${this.get('emailAddress')}`);
-      	this.set('emailAddress', '');
+     	  this.set('responseMessage', `Thank you! Your message has been sent and your email saved: ${this.get('emailAddress')}`);
+        this.set('emailAddress', '');
       	this.set('message', '');
       });
 

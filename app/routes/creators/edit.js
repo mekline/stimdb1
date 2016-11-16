@@ -8,6 +8,17 @@ export default Ember.Route.extend({
     return this.store.findRecord('creator', params.creator_id);
   },
 
+  setupController: function (controller, model) {
+    this._super(controller, model);
+
+    controller.set('title', 'Edit an existing creator');
+    controller.set('buttonLabel', 'Edit creator');
+  },
+
+  renderTemplate() {
+    this.render('creators/form');
+  },
+
   actions: {
 
     saveCreator(newCreator) {

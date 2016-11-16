@@ -36,7 +36,19 @@ define('stimdb1/components/app-version', ['exports', 'ember-cli-app-version/comp
   });
 });
 define('stimdb1/components/creator-item-form', ['exports', 'ember'], function (exports, _ember) {
-  exports['default'] = _ember['default'].Component.extend({});
+  exports['default'] = _ember['default'].Component.extend({
+
+    buttonLabel: 'Save',
+
+    actions: {
+
+      buttonClicked: function buttonClicked(param) {
+        this.sendAction('action', param);
+      }
+
+    }
+
+  });
 });
 define('stimdb1/components/creator-item', ['exports', 'ember'], function (exports, _ember) {
   exports['default'] = _ember['default'].Component.extend({});
@@ -268,7 +280,11 @@ define('stimdb1/models/creator', ['exports', 'ember-data'], function (exports, _
     stimsets: _emberData['default'].hasMany('stimset'),
     name: _emberData['default'].attr('string'),
     emailaddress: _emberData['default'].attr('string'),
-    website: _emberData['default'].attr('string')
+    website: _emberData['default'].attr('string'),
+
+    isValidName: Ember.computed.notEmpty('name'),
+    isValidEmail: Ember.computed.match('emailaddress', /^.+@.+\..+$/),
+    isValidContact: Ember.computed.and('isValidEmail', 'isValidName')
   });
 });
 define('stimdb1/models/message', ['exports', 'ember-data'], function (exports, _emberData) {
@@ -319,6 +335,7 @@ define('stimdb1/router', ['exports', 'ember', 'stimdb1/config/environment'], fun
     this.route('stimsets', function () {
       this.route('new');
       this.route('listall');
+      this.route('search');
     });
   });
 
@@ -345,6 +362,17 @@ define('stimdb1/routes/creators/edit', ['exports', 'ember'], function (exports, 
 
     model: function model(params) {
       return this.store.findRecord('creator', params.creator_id);
+    },
+
+    setupController: function setupController(controller, model) {
+      this._super(controller, model);
+
+      controller.set('title', 'Edit an existing creator');
+      controller.set('buttonLabel', 'Edit creator');
+    },
+
+    renderTemplate: function renderTemplate() {
+      this.render('creators/form');
     },
 
     actions: {
@@ -403,6 +431,17 @@ define('stimdb1/routes/creators/new', ['exports', 'ember'], function (exports, _
       return this.store.createRecord('creator');
     },
 
+    setupController: function setupController(controller, model) {
+      this._super(controller, model);
+
+      controller.set('title', 'Add a new stimulus set Creator');
+      controller.set('buttonLabel', 'New creator');
+    },
+
+    renderTemplate: function renderTemplate() {
+      this.render('creators/form');
+    },
+
     actions: {
 
       saveCreator: function saveCreator(newCreator) {
@@ -422,6 +461,9 @@ define('stimdb1/routes/creators/new', ['exports', 'ember'], function (exports, _
   });
 });
 // app/routes/libraries/new.js
+define('stimdb1/routes/stimsets/search', ['exports', 'ember'], function (exports, _ember) {
+  exports['default'] = _ember['default'].Route.extend({});
+});
 define('stimdb1/services/ajax', ['exports', 'ember-ajax/services/ajax'], function (exports, _emberAjaxServicesAjax) {
   Object.defineProperty(exports, 'default', {
     enumerable: true,
@@ -815,6 +857,78 @@ define("stimdb1/templates/application", ["exports"], function (exports) {
 });
 define("stimdb1/templates/components/creator-item-form", ["exports"], function (exports) {
   exports["default"] = Ember.HTMLBars.template((function () {
+    var child0 = (function () {
+      return {
+        meta: {
+          "revision": "Ember@2.8.2",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 6,
+              "column": 10
+            },
+            "end": {
+              "line": 6,
+              "column": 100
+            }
+          },
+          "moduleName": "stimdb1/templates/components/creator-item-form.hbs"
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createElement("span");
+          dom.setAttribute(el1, "class", "glyphicon glyphicon-ok form-control-feedback");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes() {
+          return [];
+        },
+        statements: [],
+        locals: [],
+        templates: []
+      };
+    })();
+    var child1 = (function () {
+      return {
+        meta: {
+          "revision": "Ember@2.8.2",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 13,
+              "column": 10
+            },
+            "end": {
+              "line": 13,
+              "column": 101
+            }
+          },
+          "moduleName": "stimdb1/templates/components/creator-item-form.hbs"
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createElement("span");
+          dom.setAttribute(el1, "class", "glyphicon glyphicon-ok form-control-feedback");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes() {
+          return [];
+        },
+        statements: [],
+        locals: [],
+        templates: []
+      };
+    })();
     return {
       meta: {
         "revision": "Ember@2.8.2",
@@ -825,7 +939,7 @@ define("stimdb1/templates/components/creator-item-form", ["exports"], function (
             "column": 0
           },
           "end": {
-            "line": 2,
+            "line": 28,
             "column": 0
           }
         },
@@ -837,21 +951,141 @@ define("stimdb1/templates/components/creator-item-form", ["exports"], function (
       hasRendered: false,
       buildFragment: function buildFragment(dom) {
         var el0 = dom.createDocumentFragment();
-        var el1 = dom.createComment("");
+        var el1 = dom.createElement("div");
+        dom.setAttribute(el1, "class", "form-horizontal");
+        var el2 = dom.createTextNode("\n    ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        var el3 = dom.createTextNode("\n        ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("label");
+        dom.setAttribute(el3, "class", "col-sm-2 control-label");
+        var el4 = dom.createTextNode("Name*");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n        ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("div");
+        dom.setAttribute(el3, "class", "col-sm-10");
+        var el4 = dom.createTextNode("\n          ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n          ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n        ");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n    ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        var el3 = dom.createTextNode("\n        ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("label");
+        dom.setAttribute(el3, "class", "col-sm-2 control-label");
+        var el4 = dom.createTextNode("Email*");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n        ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("div");
+        dom.setAttribute(el3, "class", "col-sm-10");
+        var el4 = dom.createTextNode("\n          ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n          ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n        ");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n    ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "form-group");
+        var el3 = dom.createTextNode("\n        ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("label");
+        dom.setAttribute(el3, "class", "col-sm-2 control-label");
+        var el4 = dom.createTextNode("Website");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n        ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("div");
+        dom.setAttribute(el3, "class", "col-sm-10");
+        var el4 = dom.createTextNode("\n          ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n        ");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n    ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "form-group");
+        var el3 = dom.createTextNode("\n        ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("div");
+        dom.setAttribute(el3, "class", "col-sm-offset-2 col-sm-10");
+        var el4 = dom.createTextNode("\n            ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("button");
+        dom.setAttribute(el4, "type", "submit");
+        dom.setAttribute(el4, "class", "btn btn-default");
+        var el5 = dom.createComment("");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n        ");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n");
         dom.appendChild(el0, el1);
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var morphs = new Array(1);
-        morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
-        dom.insertBoundary(fragment, 0);
+        var element0 = dom.childAt(fragment, [0]);
+        var element1 = dom.childAt(element0, [1]);
+        var element2 = dom.childAt(element1, [3]);
+        var element3 = dom.childAt(element0, [3]);
+        var element4 = dom.childAt(element3, [3]);
+        var element5 = dom.childAt(element0, [7, 1, 1]);
+        var morphs = new Array(10);
+        morphs[0] = dom.createAttrMorph(element1, 'class');
+        morphs[1] = dom.createMorphAt(element2, 1, 1);
+        morphs[2] = dom.createMorphAt(element2, 3, 3);
+        morphs[3] = dom.createAttrMorph(element3, 'class');
+        morphs[4] = dom.createMorphAt(element4, 1, 1);
+        morphs[5] = dom.createMorphAt(element4, 3, 3);
+        morphs[6] = dom.createMorphAt(dom.childAt(element0, [5, 3]), 1, 1);
+        morphs[7] = dom.createAttrMorph(element5, 'disabled');
+        morphs[8] = dom.createElementMorph(element5);
+        morphs[9] = dom.createMorphAt(element5, 0, 0);
         return morphs;
       },
-      statements: [["content", "yield", ["loc", [null, [1, 0], [1, 9]]], 0, 0, 0, 0]],
+      statements: [["attribute", "class", ["concat", ["form-group has-feedback ", ["subexpr", "if", [["get", "item.isValidName", ["loc", [null, [2, 45], [2, 61]]], 0, 0, 0, 0], "has-success"], [], ["loc", [null, [2, 40], [2, 77]]], 0, 0]], 0, 0, 0, 0, 0], 0, 0, 0, 0], ["inline", "input", [], ["type", "text", "value", ["subexpr", "@mut", [["get", "item.name", ["loc", [null, [5, 36], [5, 45]]], 0, 0, 0, 0]], [], [], 0, 0], "class", "form-control", "placeholder", "The person's name"], ["loc", [null, [5, 10], [5, 100]]], 0, 0], ["block", "if", [["get", "item.isValidName", ["loc", [null, [6, 16], [6, 32]]], 0, 0, 0, 0]], [], 0, null, ["loc", [null, [6, 10], [6, 107]]]], ["attribute", "class", ["concat", ["form-group has-feedback ", ["subexpr", "if", [["get", "item.isValidEmail", ["loc", [null, [9, 45], [9, 62]]], 0, 0, 0, 0], "has-success"], [], ["loc", [null, [9, 40], [9, 78]]], 0, 0]], 0, 0, 0, 0, 0], 0, 0, 0, 0], ["inline", "input", [], ["type", "text", "value", ["subexpr", "@mut", [["get", "item.emailaddress", ["loc", [null, [12, 36], [12, 53]]], 0, 0, 0, 0]], [], [], 0, 0], "class", "form-control", "placeholder", "The person's email address"], ["loc", [null, [12, 10], [12, 117]]], 0, 0], ["block", "if", [["get", "item.isValidEmail", ["loc", [null, [13, 16], [13, 33]]], 0, 0, 0, 0]], [], 1, null, ["loc", [null, [13, 10], [13, 108]]]], ["inline", "input", [], ["type", "text", "value", ["subexpr", "@mut", [["get", "item.website", ["loc", [null, [19, 36], [19, 48]]], 0, 0, 0, 0]], [], [], 0, 0], "class", "form-control", "placeholder", "The person's website"], ["loc", [null, [19, 10], [19, 106]]], 0, 0], ["attribute", "disabled", ["subexpr", "unless", [["get", "item.isValidContact", ["loc", [null, [24, 108], [24, 127]]], 0, 0, 0, 0], true], [], ["loc", [null, [null, null], [24, 134]]], 0, 0], 0, 0, 0, 0], ["element", "action", ["buttonClicked", ["get", "item", ["loc", [null, [24, 83], [24, 87]]], 0, 0, 0, 0]], [], ["loc", [null, [24, 58], [24, 89]]], 0, 0], ["content", "buttonLabel", ["loc", [null, [24, 135], [24, 150]]], 0, 0, 0, 0]],
       locals: [],
-      templates: []
+      templates: [child0, child1]
     };
   })());
 });
@@ -1284,8 +1518,47 @@ define("stimdb1/templates/creators", ["exports"], function (exports) {
     };
   })());
 });
-define("stimdb1/templates/creators/edit", ["exports"], function (exports) {
+define("stimdb1/templates/creators/form", ["exports"], function (exports) {
   exports["default"] = Ember.HTMLBars.template((function () {
+    var child0 = (function () {
+      return {
+        meta: {
+          "revision": "Ember@2.8.2",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 11,
+              "column": 4
+            },
+            "end": {
+              "line": 13,
+              "column": 4
+            }
+          },
+          "moduleName": "stimdb1/templates/creators/form.hbs"
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("      ");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("br");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes() {
+          return [];
+        },
+        statements: [],
+        locals: [],
+        templates: []
+      };
+    })();
     return {
       meta: {
         "revision": "Ember@2.8.2",
@@ -1296,11 +1569,11 @@ define("stimdb1/templates/creators/edit", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 29,
+            "line": 16,
             "column": 6
           }
         },
-        "moduleName": "stimdb1/templates/creators/edit.hbs"
+        "moduleName": "stimdb1/templates/creators/form.hbs"
       },
       isEmpty: false,
       arity: 0,
@@ -1308,133 +1581,56 @@ define("stimdb1/templates/creators/edit", ["exports"], function (exports) {
       hasRendered: false,
       buildFragment: function buildFragment(dom) {
         var el0 = dom.createDocumentFragment();
-        var el1 = dom.createComment(" app/templates/creators/edit.hbs ");
+        var el1 = dom.createComment(" /app/templates/creators/form.hbs ");
         dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n\n");
+        var el1 = dom.createTextNode("\n");
         dom.appendChild(el0, el1);
-        var el1 = dom.createElement("h3");
-        var el2 = dom.createTextNode("Edit a contributor (with ugly code)");
+        var el1 = dom.createElement("h2");
+        var el2 = dom.createComment("");
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n\n");
         dom.appendChild(el0, el1);
         var el1 = dom.createElement("div");
-        dom.setAttribute(el1, "class", "form-horizontal");
-        var el2 = dom.createTextNode("\n  ");
+        dom.setAttribute(el1, "class", "row");
+        var el2 = dom.createTextNode("\n  \n  ");
         dom.appendChild(el1, el2);
         var el2 = dom.createElement("div");
-        dom.setAttribute(el2, "class", "form-group");
+        dom.setAttribute(el2, "class", "col-md-6");
         var el3 = dom.createTextNode("\n    ");
         dom.appendChild(el2, el3);
-        var el3 = dom.createElement("label");
-        dom.setAttribute(el3, "class", "col-sm-2 control-label");
-        var el4 = dom.createTextNode("Name");
-        dom.appendChild(el3, el4);
-        dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("\n    ");
-        dom.appendChild(el2, el3);
-        var el3 = dom.createElement("div");
-        dom.setAttribute(el3, "class", "col-sm-10");
-        var el4 = dom.createTextNode("\n      ");
-        dom.appendChild(el3, el4);
-        var el4 = dom.createComment("");
-        dom.appendChild(el3, el4);
-        var el4 = dom.createTextNode("\n    ");
-        dom.appendChild(el3, el4);
+        var el3 = dom.createComment("");
         dom.appendChild(el2, el3);
         var el3 = dom.createTextNode("\n  ");
         dom.appendChild(el2, el3);
         dom.appendChild(el1, el2);
-        var el2 = dom.createTextNode("\n  ");
+        var el2 = dom.createTextNode("\n  \n  ");
         dom.appendChild(el1, el2);
         var el2 = dom.createElement("div");
-        dom.setAttribute(el2, "class", "form-group");
-        var el3 = dom.createTextNode("\n    ");
+        dom.setAttribute(el2, "class", "col-md-4");
+        var el3 = dom.createTextNode("\n");
         dom.appendChild(el2, el3);
-        var el3 = dom.createElement("label");
-        dom.setAttribute(el3, "class", "col-sm-2 control-label");
-        var el4 = dom.createTextNode("Email Address");
-        dom.appendChild(el3, el4);
+        var el3 = dom.createComment("");
         dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("\n    ");
-        dom.appendChild(el2, el3);
-        var el3 = dom.createElement("div");
-        dom.setAttribute(el3, "class", "col-sm-10");
-        var el4 = dom.createTextNode("\n      ");
-        dom.appendChild(el3, el4);
-        var el4 = dom.createComment("");
-        dom.appendChild(el3, el4);
-        var el4 = dom.createTextNode("\n    ");
-        dom.appendChild(el3, el4);
-        dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("\n  ");
+        var el3 = dom.createTextNode("  ");
         dom.appendChild(el2, el3);
         dom.appendChild(el1, el2);
-        var el2 = dom.createTextNode("\n  ");
-        dom.appendChild(el1, el2);
-        var el2 = dom.createElement("div");
-        dom.setAttribute(el2, "class", "form-group");
-        var el3 = dom.createTextNode("\n    ");
-        dom.appendChild(el2, el3);
-        var el3 = dom.createElement("label");
-        dom.setAttribute(el3, "class", "col-sm-2 control-label");
-        var el4 = dom.createTextNode("Website");
-        dom.appendChild(el3, el4);
-        dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("\n    ");
-        dom.appendChild(el2, el3);
-        var el3 = dom.createElement("div");
-        dom.setAttribute(el3, "class", "col-sm-10");
-        var el4 = dom.createTextNode("\n      ");
-        dom.appendChild(el3, el4);
-        var el4 = dom.createComment("");
-        dom.appendChild(el3, el4);
-        var el4 = dom.createTextNode("\n    ");
-        dom.appendChild(el3, el4);
-        dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("\n  ");
-        dom.appendChild(el2, el3);
-        dom.appendChild(el1, el2);
-        var el2 = dom.createTextNode("\n  ");
-        dom.appendChild(el1, el2);
-        var el2 = dom.createElement("div");
-        dom.setAttribute(el2, "class", "form-group");
-        var el3 = dom.createTextNode("\n    ");
-        dom.appendChild(el2, el3);
-        var el3 = dom.createElement("div");
-        dom.setAttribute(el3, "class", "col-sm-offset-2 col-sm-10");
-        var el4 = dom.createTextNode("\n      ");
-        dom.appendChild(el3, el4);
-        var el4 = dom.createElement("button");
-        dom.setAttribute(el4, "type", "submit");
-        dom.setAttribute(el4, "class", "btn btn-default");
-        var el5 = dom.createTextNode("Update creator");
-        dom.appendChild(el4, el5);
-        dom.appendChild(el3, el4);
-        var el4 = dom.createTextNode("\n    ");
-        dom.appendChild(el3, el4);
-        dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("\n  ");
-        dom.appendChild(el2, el3);
-        dom.appendChild(el1, el2);
-        var el2 = dom.createTextNode("\n");
+        var el2 = dom.createTextNode("\n\n");
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
         var element0 = dom.childAt(fragment, [4]);
-        var element1 = dom.childAt(element0, [7, 1, 1]);
-        var morphs = new Array(4);
-        morphs[0] = dom.createMorphAt(dom.childAt(element0, [1, 3]), 1, 1);
-        morphs[1] = dom.createMorphAt(dom.childAt(element0, [3, 3]), 1, 1);
-        morphs[2] = dom.createMorphAt(dom.childAt(element0, [5, 3]), 1, 1);
-        morphs[3] = dom.createElementMorph(element1);
+        var morphs = new Array(3);
+        morphs[0] = dom.createMorphAt(dom.childAt(fragment, [2]), 0, 0);
+        morphs[1] = dom.createMorphAt(dom.childAt(element0, [1]), 1, 1);
+        morphs[2] = dom.createMorphAt(dom.childAt(element0, [3]), 1, 1);
         return morphs;
       },
-      statements: [["inline", "input", [], ["type", "text", "value", ["subexpr", "@mut", [["get", "model.name", ["loc", [null, [9, 32], [9, 42]]], 0, 0, 0, 0]], [], [], 0, 0], "class", "form-control", "placeholder", "The person's name"], ["loc", [null, [9, 6], [9, 97]]], 0, 0], ["inline", "input", [], ["type", "text", "value", ["subexpr", "@mut", [["get", "model.emailaddress", ["loc", [null, [15, 32], [15, 50]]], 0, 0, 0, 0]], [], [], 0, 0], "class", "form-control", "placeholder", "The person's email address"], ["loc", [null, [15, 6], [15, 114]]], 0, 0], ["inline", "input", [], ["type", "text", "value", ["subexpr", "@mut", [["get", "model.website", ["loc", [null, [21, 32], [21, 45]]], 0, 0, 0, 0]], [], [], 0, 0], "class", "form-control", "placeholder", "The person's website"], ["loc", [null, [21, 6], [21, 103]]], 0, 0], ["element", "action", ["saveCreator", ["get", "model", ["loc", [null, [26, 75], [26, 80]]], 0, 0, 0, 0]], [], ["loc", [null, [26, 52], [26, 82]]], 0, 0]],
+      statements: [["content", "title", ["loc", [null, [2, 4], [2, 13]]], 0, 0, 0, 0], ["inline", "creator-item-form", [], ["item", ["subexpr", "@mut", [["get", "model", ["loc", [null, [7, 29], [7, 34]]], 0, 0, 0, 0]], [], [], 0, 0], "buttonLabel", ["subexpr", "@mut", [["get", "buttonLabel", ["loc", [null, [7, 47], [7, 58]]], 0, 0, 0, 0]], [], [], 0, 0], "action", "saveCreator"], ["loc", [null, [7, 4], [7, 81]]], 0, 0], ["block", "creator-item", [], ["item", ["subexpr", "@mut", [["get", "model", ["loc", [null, [11, 25], [11, 30]]], 0, 0, 0, 0]], [], [], 0, 0]], 0, null, ["loc", [null, [11, 4], [13, 21]]]]],
       locals: [],
-      templates: []
+      templates: [child0]
     };
   })());
 });
@@ -1618,160 +1814,6 @@ define("stimdb1/templates/creators/listall", ["exports"], function (exports) {
       statements: [["block", "each", [["get", "model", ["loc", [null, [5, 10], [5, 15]]], 0, 0, 0, 0]], [], 0, null, ["loc", [null, [5, 2], [18, 9]]]]],
       locals: [],
       templates: [child0]
-    };
-  })());
-});
-define("stimdb1/templates/creators/new", ["exports"], function (exports) {
-  exports["default"] = Ember.HTMLBars.template((function () {
-    return {
-      meta: {
-        "revision": "Ember@2.8.2",
-        "loc": {
-          "source": null,
-          "start": {
-            "line": 1,
-            "column": 0
-          },
-          "end": {
-            "line": 29,
-            "column": 6
-          }
-        },
-        "moduleName": "stimdb1/templates/creators/new.hbs"
-      },
-      isEmpty: false,
-      arity: 0,
-      cachedFragment: null,
-      hasRendered: false,
-      buildFragment: function buildFragment(dom) {
-        var el0 = dom.createDocumentFragment();
-        var el1 = dom.createComment(" app/templates/creators/new.hbs ");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n\n");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createElement("h3");
-        var el2 = dom.createTextNode("Add a new stimulus set contributor");
-        dom.appendChild(el1, el2);
-        dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n\n");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createElement("div");
-        dom.setAttribute(el1, "class", "form-horizontal");
-        var el2 = dom.createTextNode("\n  ");
-        dom.appendChild(el1, el2);
-        var el2 = dom.createElement("div");
-        dom.setAttribute(el2, "class", "form-group");
-        var el3 = dom.createTextNode("\n    ");
-        dom.appendChild(el2, el3);
-        var el3 = dom.createElement("label");
-        dom.setAttribute(el3, "class", "col-sm-2 control-label");
-        var el4 = dom.createTextNode("Name");
-        dom.appendChild(el3, el4);
-        dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("\n    ");
-        dom.appendChild(el2, el3);
-        var el3 = dom.createElement("div");
-        dom.setAttribute(el3, "class", "col-sm-10");
-        var el4 = dom.createTextNode("\n      ");
-        dom.appendChild(el3, el4);
-        var el4 = dom.createComment("");
-        dom.appendChild(el3, el4);
-        var el4 = dom.createTextNode("\n    ");
-        dom.appendChild(el3, el4);
-        dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("\n  ");
-        dom.appendChild(el2, el3);
-        dom.appendChild(el1, el2);
-        var el2 = dom.createTextNode("\n  ");
-        dom.appendChild(el1, el2);
-        var el2 = dom.createElement("div");
-        dom.setAttribute(el2, "class", "form-group");
-        var el3 = dom.createTextNode("\n    ");
-        dom.appendChild(el2, el3);
-        var el3 = dom.createElement("label");
-        dom.setAttribute(el3, "class", "col-sm-2 control-label");
-        var el4 = dom.createTextNode("Email Address");
-        dom.appendChild(el3, el4);
-        dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("\n    ");
-        dom.appendChild(el2, el3);
-        var el3 = dom.createElement("div");
-        dom.setAttribute(el3, "class", "col-sm-10");
-        var el4 = dom.createTextNode("\n      ");
-        dom.appendChild(el3, el4);
-        var el4 = dom.createComment("");
-        dom.appendChild(el3, el4);
-        var el4 = dom.createTextNode("\n    ");
-        dom.appendChild(el3, el4);
-        dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("\n  ");
-        dom.appendChild(el2, el3);
-        dom.appendChild(el1, el2);
-        var el2 = dom.createTextNode("\n  ");
-        dom.appendChild(el1, el2);
-        var el2 = dom.createElement("div");
-        dom.setAttribute(el2, "class", "form-group");
-        var el3 = dom.createTextNode("\n    ");
-        dom.appendChild(el2, el3);
-        var el3 = dom.createElement("label");
-        dom.setAttribute(el3, "class", "col-sm-2 control-label");
-        var el4 = dom.createTextNode("Website");
-        dom.appendChild(el3, el4);
-        dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("\n    ");
-        dom.appendChild(el2, el3);
-        var el3 = dom.createElement("div");
-        dom.setAttribute(el3, "class", "col-sm-10");
-        var el4 = dom.createTextNode("\n      ");
-        dom.appendChild(el3, el4);
-        var el4 = dom.createComment("");
-        dom.appendChild(el3, el4);
-        var el4 = dom.createTextNode("\n    ");
-        dom.appendChild(el3, el4);
-        dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("\n  ");
-        dom.appendChild(el2, el3);
-        dom.appendChild(el1, el2);
-        var el2 = dom.createTextNode("\n  ");
-        dom.appendChild(el1, el2);
-        var el2 = dom.createElement("div");
-        dom.setAttribute(el2, "class", "form-group");
-        var el3 = dom.createTextNode("\n    ");
-        dom.appendChild(el2, el3);
-        var el3 = dom.createElement("div");
-        dom.setAttribute(el3, "class", "col-sm-offset-2 col-sm-10");
-        var el4 = dom.createTextNode("\n      ");
-        dom.appendChild(el3, el4);
-        var el4 = dom.createElement("button");
-        dom.setAttribute(el4, "type", "submit");
-        dom.setAttribute(el4, "class", "btn btn-default");
-        var el5 = dom.createTextNode("Add to creator list");
-        dom.appendChild(el4, el5);
-        dom.appendChild(el3, el4);
-        var el4 = dom.createTextNode("\n    ");
-        dom.appendChild(el3, el4);
-        dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("\n  ");
-        dom.appendChild(el2, el3);
-        dom.appendChild(el1, el2);
-        var el2 = dom.createTextNode("\n");
-        dom.appendChild(el1, el2);
-        dom.appendChild(el0, el1);
-        return el0;
-      },
-      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var element0 = dom.childAt(fragment, [4]);
-        var element1 = dom.childAt(element0, [7, 1, 1]);
-        var morphs = new Array(4);
-        morphs[0] = dom.createMorphAt(dom.childAt(element0, [1, 3]), 1, 1);
-        morphs[1] = dom.createMorphAt(dom.childAt(element0, [3, 3]), 1, 1);
-        morphs[2] = dom.createMorphAt(dom.childAt(element0, [5, 3]), 1, 1);
-        morphs[3] = dom.createElementMorph(element1);
-        return morphs;
-      },
-      statements: [["inline", "input", [], ["type", "text", "value", ["subexpr", "@mut", [["get", "model.name", ["loc", [null, [9, 32], [9, 42]]], 0, 0, 0, 0]], [], [], 0, 0], "class", "form-control", "placeholder", "The person's name"], ["loc", [null, [9, 6], [9, 97]]], 0, 0], ["inline", "input", [], ["type", "text", "value", ["subexpr", "@mut", [["get", "model.emailaddress", ["loc", [null, [15, 32], [15, 50]]], 0, 0, 0, 0]], [], [], 0, 0], "class", "form-control", "placeholder", "The person's email address"], ["loc", [null, [15, 6], [15, 114]]], 0, 0], ["inline", "input", [], ["type", "text", "value", ["subexpr", "@mut", [["get", "model.website", ["loc", [null, [21, 32], [21, 45]]], 0, 0, 0, 0]], [], [], 0, 0], "class", "form-control", "placeholder", "The person's website"], ["loc", [null, [21, 6], [21, 103]]], 0, 0], ["element", "action", ["saveCreator", ["get", "model", ["loc", [null, [26, 75], [26, 80]]], 0, 0, 0, 0]], [], ["loc", [null, [26, 52], [26, 82]]], 0, 0]],
-      locals: [],
-      templates: []
     };
   })());
 });
@@ -2334,6 +2376,44 @@ define("stimdb1/templates/stimsets", ["exports"], function (exports) {
             },
             "end": {
               "line": 11,
+              "column": 68
+            }
+          },
+          "moduleName": "stimdb1/templates/stimsets.hbs"
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createElement("a");
+          dom.setAttribute(el1, "href", "");
+          var el2 = dom.createTextNode("Search");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes() {
+          return [];
+        },
+        statements: [],
+        locals: [],
+        templates: []
+      };
+    })();
+    var child2 = (function () {
+      return {
+        meta: {
+          "revision": "Ember@2.8.2",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 12,
+              "column": 4
+            },
+            "end": {
+              "line": 12,
               "column": 66
             }
           },
@@ -2370,7 +2450,7 @@ define("stimdb1/templates/stimsets", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 15,
+            "line": 16,
             "column": 10
           }
         },
@@ -2412,6 +2492,10 @@ define("stimdb1/templates/stimsets", ["exports"], function (exports) {
         dom.appendChild(el2, el3);
         var el3 = dom.createComment("");
         dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
         var el3 = dom.createTextNode("\n  ");
         dom.appendChild(el2, el3);
         dom.appendChild(el1, el2);
@@ -2426,16 +2510,17 @@ define("stimdb1/templates/stimsets", ["exports"], function (exports) {
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
         var element0 = dom.childAt(fragment, [6, 1]);
-        var morphs = new Array(3);
+        var morphs = new Array(4);
         morphs[0] = dom.createMorphAt(element0, 1, 1);
         morphs[1] = dom.createMorphAt(element0, 3, 3);
-        morphs[2] = dom.createMorphAt(fragment, 8, 8, contextualElement);
+        morphs[2] = dom.createMorphAt(element0, 5, 5);
+        morphs[3] = dom.createMorphAt(fragment, 8, 8, contextualElement);
         dom.insertBoundary(fragment, null);
         return morphs;
       },
-      statements: [["block", "link-to", ["stimsets.listall"], ["tagName", "li"], 0, null, ["loc", [null, [10, 4], [10, 83]]]], ["block", "link-to", ["stimsets.new"], ["tagName", "li"], 1, null, ["loc", [null, [11, 4], [11, 78]]]], ["content", "outlet", ["loc", [null, [15, 0], [15, 10]]], 0, 0, 0, 0]],
+      statements: [["block", "link-to", ["stimsets.listall"], ["tagName", "li"], 0, null, ["loc", [null, [10, 4], [10, 83]]]], ["block", "link-to", ["stimsets.search"], ["tagName", "li"], 1, null, ["loc", [null, [11, 4], [11, 80]]]], ["block", "link-to", ["stimsets.new"], ["tagName", "li"], 2, null, ["loc", [null, [12, 4], [12, 78]]]], ["content", "outlet", ["loc", [null, [16, 0], [16, 10]]], 0, 0, 0, 0]],
       locals: [],
-      templates: [child0, child1]
+      templates: [child0, child1, child2]
     };
   })());
 });
@@ -2517,6 +2602,47 @@ define("stimdb1/templates/stimsets/new", ["exports"], function (exports) {
     };
   })());
 });
+define("stimdb1/templates/stimsets/search", ["exports"], function (exports) {
+  exports["default"] = Ember.HTMLBars.template((function () {
+    return {
+      meta: {
+        "revision": "Ember@2.8.2",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 2,
+            "column": 0
+          }
+        },
+        "moduleName": "stimdb1/templates/stimsets/search.hbs"
+      },
+      isEmpty: false,
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createElement("p");
+        var el2 = dom.createTextNode(" Magic search will go here! ");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes() {
+        return [];
+      },
+      statements: [],
+      locals: [],
+      templates: []
+    };
+  })());
+});
 define('stimdb1/torii-providers/firebase', ['exports', 'emberfire/torii-providers/firebase'], function (exports, _emberfireToriiProvidersFirebase) {
   exports['default'] = _emberfireToriiProvidersFirebase['default'];
 });
@@ -2556,7 +2682,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("stimdb1/app")["default"].create({"name":"stimdb1","version":"0.0.0+0019e45b"});
+  require("stimdb1/app")["default"].create({"name":"stimdb1","version":"0.0.0+add0b0c7"});
 }
 
 /* jshint ignore:end */

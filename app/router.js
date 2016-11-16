@@ -23,6 +23,7 @@ Router.map(function() {
   this.route('stimsets', function() {
     this.route('new');
     this.route('listall');
+    this.route('search');
   });
 
 });

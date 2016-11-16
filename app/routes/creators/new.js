@@ -7,6 +7,17 @@ export default Ember.Route.extend({
     return this.store.createRecord('creator');
   },
 
+  setupController: function (controller, model) {
+    this._super(controller, model);
+
+    controller.set('title', 'Add a new stimulus set Creator');
+    controller.set('buttonLabel', 'New creator');
+  },
+
+  renderTemplate() {
+    this.render('creators/form');
+  },
+
   actions: {
 
     saveCreator(newCreator) {

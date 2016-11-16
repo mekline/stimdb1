@@ -591,7 +591,7 @@ define('stimdb1/tests/models/creator.jshint', ['exports'], function (exports) {
   QUnit.module('JSHint | models/creator.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(true, 'models/creator.js should pass jshint.');
+    assert.ok(false, 'models/creator.js should pass jshint.\nmodels/creator.js: line 10, col 16, \'Ember\' is not defined.\nmodels/creator.js: line 11, col 17, \'Ember\' is not defined.\nmodels/creator.js: line 12, col 19, \'Ember\' is not defined.\n\n3 errors');
   });
 });
 define('stimdb1/tests/models/message.jshint', ['exports'], function (exports) {
@@ -691,6 +691,15 @@ define('stimdb1/tests/routes/creators/new.jshint', ['exports'], function (export
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'routes/creators/new.js should pass jshint.');
+  });
+});
+define('stimdb1/tests/routes/stimsets/search.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | routes/stimsets/search.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'routes/stimsets/search.js should pass jshint.');
   });
 });
 define('stimdb1/tests/test-helper', ['exports', 'stimdb1/tests/helpers/resolver', 'ember-qunit'], function (exports, _stimdb1TestsHelpersResolver, _emberQunit) {
@@ -877,6 +886,27 @@ define('stimdb1/tests/unit/routes/contact-test.jshint', ['exports'], function (e
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'unit/routes/contact-test.js should pass jshint.');
+  });
+});
+define('stimdb1/tests/unit/routes/stimsets/search-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
+
+  (0, _emberQunit.moduleFor)('route:stimsets/search', 'Unit | Route | stimsets/search', {
+    // Specify the other units that are required for this test.
+    // needs: ['controller:foo']
+  });
+
+  (0, _emberQunit.test)('it exists', function (assert) {
+    var route = this.subject();
+    assert.ok(route);
+  });
+});
+define('stimdb1/tests/unit/routes/stimsets/search-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | unit/routes/stimsets/search-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/routes/stimsets/search-test.js should pass jshint.');
   });
 });
 /* jshint ignore:start */

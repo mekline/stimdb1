@@ -2682,7 +2682,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("stimdb1/app")["default"].create({"name":"stimdb1","version":"0.0.0+add0b0c7"});
+  require("stimdb1/app")["default"].create({"name":"stimdb1","version":"0.0.0+4891b584"});
 }
 
 /* jshint ignore:end */

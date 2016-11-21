@@ -1,12 +1,9 @@
-<h1>Contact</h1>
+<p>Thank you for checking out the NAMEOFDATABASE! This is a mockup of the stimulus database; it's designed to have a relatively small number of stimulus sets and creators in order to test out feature implementation. Currently it's the only instantiation of the database.</p>
 
-<p>This website isn't a real thing yet! But the contact form is. For now, this page adds emails/msg to a db.</p>
+<p>The plan for the project is to focus initially on event stimuli, and then branch out to other classes. We're not yet ready to upload new sets, but we are very interested in hearing from you if you are interested in contributing stimuli! If you are interested or have any other questions about the project, please send a message below. Your email will be added to a list to be contacted about updates!</p>
 
 <div>
   <h3>Contact form</h3>
-
-
-  <p>You can send questions through the form below or contact me at mekline@mit.edu. Entering your email address below will add you to a list to be contacted about updates to the database.</p>
 
   <br/><br/>
 
@@ -18,9 +15,17 @@
 
       {{textarea value=message class="form-control" placeholder="Please type your message." autofocus="autofocus" rows="5"}}
 
+      <br>
+      
+      <p>If your stimuli are currently available online, feel free to send us a link to the materials!</p>
+
+      <br>
+
+      <button disabled={{isDisabled}} class="btn btn-primary btn-lg btn-block" {{action 'saveMessage'}}>Send message</button>
+
     </div>
     <div class="col-xs-10 col-xs-offset-1 col-sm-offset-0 col-sm-4 col-md-3">
-        <button disabled={{isDisabled}} class="btn btn-primary btn-lg btn-block" {{action 'saveMessage'}}>Send message</button>
+
     </div>
   </div>
 

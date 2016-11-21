@@ -461,6 +461,9 @@ define('stimdb1/routes/creators/new', ['exports', 'ember'], function (exports, _
   });
 });
 // app/routes/libraries/new.js
+define('stimdb1/routes/stimsets/new', ['exports', 'ember'], function (exports, _ember) {
+  exports['default'] = _ember['default'].Route.extend({});
+});
 define('stimdb1/routes/stimsets/search', ['exports', 'ember'], function (exports, _ember) {
   exports['default'] = _ember['default'].Route.extend({});
 });
@@ -1199,11 +1202,11 @@ define("stimdb1/templates/contact", ["exports"], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 27,
+              "line": 32,
               "column": 2
             },
             "end": {
-              "line": 29,
+              "line": 34,
               "column": 3
             }
           },
@@ -1231,7 +1234,7 @@ define("stimdb1/templates/contact", ["exports"], function (exports) {
           morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 0, 0);
           return morphs;
         },
-        statements: [["content", "responseMessage", ["loc", [null, [28, 38], [28, 57]]], 0, 0, 0, 0]],
+        statements: [["content", "responseMessage", ["loc", [null, [33, 38], [33, 57]]], 0, 0, 0, 0]],
         locals: [],
         templates: []
       };
@@ -1246,7 +1249,7 @@ define("stimdb1/templates/contact", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 33,
+            "line": 38,
             "column": 0
           }
         },
@@ -1258,14 +1261,14 @@ define("stimdb1/templates/contact", ["exports"], function (exports) {
       hasRendered: false,
       buildFragment: function buildFragment(dom) {
         var el0 = dom.createDocumentFragment();
-        var el1 = dom.createElement("h1");
-        var el2 = dom.createTextNode("Contact");
+        var el1 = dom.createElement("p");
+        var el2 = dom.createTextNode("Thank you for checking out the NAMEOFDATABASE! This is a mockup of the stimulus database; it's designed to have a relatively small number of stimulus sets and creators in order to test out feature implementation. Currently it's the only instantiation of the database.");
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n\n");
         dom.appendChild(el0, el1);
         var el1 = dom.createElement("p");
-        var el2 = dom.createTextNode("This website isn't a real thing yet! But the contact form is. For now, this page adds emails/msg to a db.");
+        var el2 = dom.createTextNode("The plan for the project is to focus initially on event stimuli, and then branch out to other classes. We're not yet ready to upload new sets, but we are very interested in hearing from you if you are interested in contributing stimuli! If you are interested or have any other questions about the project, please send a message below. Your email will be added to a list to be contacted about updates!");
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n\n");
@@ -1275,12 +1278,6 @@ define("stimdb1/templates/contact", ["exports"], function (exports) {
         dom.appendChild(el1, el2);
         var el2 = dom.createElement("h3");
         var el3 = dom.createTextNode("Contact form");
-        dom.appendChild(el2, el3);
-        dom.appendChild(el1, el2);
-        var el2 = dom.createTextNode("\n\n\n  ");
-        dom.appendChild(el1, el2);
-        var el2 = dom.createElement("p");
-        var el3 = dom.createTextNode("You can send questions through the form below or contact me at mekline@mit.edu. Entering your email address below will add you to a list to be contacted about updates to the database.");
         dom.appendChild(el2, el3);
         dom.appendChild(el1, el2);
         var el2 = dom.createTextNode("\n\n  ");
@@ -1305,6 +1302,27 @@ define("stimdb1/templates/contact", ["exports"], function (exports) {
         dom.appendChild(el3, el4);
         var el4 = dom.createComment("");
         dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n\n      ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("br");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n      \n      ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("p");
+        var el5 = dom.createTextNode("If your stimuli are currently available online, feel free to send us a link to the materials!");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n\n      ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("br");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n\n      ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("button");
+        dom.setAttribute(el4, "class", "btn btn-primary btn-lg btn-block");
+        var el5 = dom.createTextNode("Send message");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
         var el4 = dom.createTextNode("\n\n    ");
         dom.appendChild(el3, el4);
         dom.appendChild(el2, el3);
@@ -1312,14 +1330,7 @@ define("stimdb1/templates/contact", ["exports"], function (exports) {
         dom.appendChild(el2, el3);
         var el3 = dom.createElement("div");
         dom.setAttribute(el3, "class", "col-xs-10 col-xs-offset-1 col-sm-offset-0 col-sm-4 col-md-3");
-        var el4 = dom.createTextNode("\n        ");
-        dom.appendChild(el3, el4);
-        var el4 = dom.createElement("button");
-        dom.setAttribute(el4, "class", "btn btn-primary btn-lg btn-block");
-        var el5 = dom.createTextNode("Send message");
-        dom.appendChild(el4, el5);
-        dom.appendChild(el3, el4);
-        var el4 = dom.createTextNode("\n    ");
+        var el4 = dom.createTextNode("\n\n    ");
         dom.appendChild(el3, el4);
         dom.appendChild(el2, el3);
         var el3 = dom.createTextNode("\n  ");
@@ -1344,18 +1355,17 @@ define("stimdb1/templates/contact", ["exports"], function (exports) {
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
         var element0 = dom.childAt(fragment, [4]);
-        var element1 = dom.childAt(element0, [8]);
-        var element2 = dom.childAt(element1, [1]);
-        var element3 = dom.childAt(element1, [3, 1]);
+        var element1 = dom.childAt(element0, [6, 1]);
+        var element2 = dom.childAt(element1, [11]);
         var morphs = new Array(5);
-        morphs[0] = dom.createMorphAt(element2, 1, 1);
-        morphs[1] = dom.createMorphAt(element2, 3, 3);
-        morphs[2] = dom.createAttrMorph(element3, 'disabled');
-        morphs[3] = dom.createElementMorph(element3);
-        morphs[4] = dom.createMorphAt(element0, 10, 10);
+        morphs[0] = dom.createMorphAt(element1, 1, 1);
+        morphs[1] = dom.createMorphAt(element1, 3, 3);
+        morphs[2] = dom.createAttrMorph(element2, 'disabled');
+        morphs[3] = dom.createElementMorph(element2);
+        morphs[4] = dom.createMorphAt(element0, 8, 8);
         return morphs;
       },
-      statements: [["inline", "input", [], ["type", "email", "value", ["subexpr", "@mut", [["get", "emailAddress", ["loc", [null, [17, 33], [17, 45]]], 0, 0, 0, 0]], [], [], 0, 0], "class", "form-control", "placeholder", "Please type your e-mail address.", "autofocus", "autofocus"], ["loc", [null, [17, 6], [17, 137]]], 0, 0], ["inline", "textarea", [], ["value", ["subexpr", "@mut", [["get", "message", ["loc", [null, [19, 23], [19, 30]]], 0, 0, 0, 0]], [], [], 0, 0], "class", "form-control", "placeholder", "Please type your message.", "autofocus", "autofocus", "rows", "5"], ["loc", [null, [19, 6], [19, 124]]], 0, 0], ["attribute", "disabled", ["get", "isDisabled", ["loc", [null, [23, 27], [23, 37]]], 0, 0, 0, 0], 0, 0, 0, 0], ["element", "action", ["saveMessage"], [], ["loc", [null, [23, 81], [23, 105]]], 0, 0], ["block", "if", [["get", "responseMessage", ["loc", [null, [27, 8], [27, 23]]], 0, 0, 0, 0]], [], 0, null, ["loc", [null, [27, 2], [29, 10]]]]],
+      statements: [["inline", "input", [], ["type", "email", "value", ["subexpr", "@mut", [["get", "emailAddress", ["loc", [null, [14, 33], [14, 45]]], 0, 0, 0, 0]], [], [], 0, 0], "class", "form-control", "placeholder", "Please type your e-mail address.", "autofocus", "autofocus"], ["loc", [null, [14, 6], [14, 137]]], 0, 0], ["inline", "textarea", [], ["value", ["subexpr", "@mut", [["get", "message", ["loc", [null, [16, 23], [16, 30]]], 0, 0, 0, 0]], [], [], 0, 0], "class", "form-control", "placeholder", "Please type your message.", "autofocus", "autofocus", "rows", "5"], ["loc", [null, [16, 6], [16, 124]]], 0, 0], ["attribute", "disabled", ["get", "isDisabled", ["loc", [null, [24, 25], [24, 35]]], 0, 0, 0, 0], 0, 0, 0, 0], ["element", "action", ["saveMessage"], [], ["loc", [null, [24, 79], [24, 103]]], 0, 0], ["block", "if", [["get", "responseMessage", ["loc", [null, [32, 8], [32, 23]]], 0, 0, 0, 0]], [], 0, null, ["loc", [null, [32, 2], [34, 10]]]]],
       locals: [],
       templates: [child0]
     };
@@ -1829,7 +1839,7 @@ define("stimdb1/templates/index", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 10,
+            "line": 11,
             "column": 5
           }
         },
@@ -1845,7 +1855,7 @@ define("stimdb1/templates/index", ["exports"], function (exports) {
         var el2 = dom.createTextNode("Front page");
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n\nIt's a mockup of stimdb!  Stimdb needs a real name. Miraculously there is a navbar now. \n\nTo implement:\n");
+        var el1 = dom.createTextNode("\n\nStimdb needs a real name. Miraculously there is a navbar now. \n\nTo implement:\n");
         dom.appendChild(el0, el1);
         var el1 = dom.createElement("ul");
         var el2 = dom.createTextNode("\n");
@@ -1864,6 +1874,12 @@ define("stimdb1/templates/index", ["exports"], function (exports) {
         dom.appendChild(el1, el2);
         var el2 = dom.createElement("li");
         var el3 = dom.createTextNode("(Everything)");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("li");
+        var el3 = dom.createTextNode(" paragraph formatting in css");
         dom.appendChild(el2, el3);
         dom.appendChild(el1, el2);
         var el2 = dom.createTextNode("\n");
@@ -2682,7 +2698,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("stimdb1/app")["default"].create({"name":"stimdb1","version":"0.0.0+4891b584"});
+  require("stimdb1/app")["default"].create({"name":"stimdb1","version":"0.0.0+d9f3337a"});
 }
 
 /* jshint ignore:end */

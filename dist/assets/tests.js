@@ -693,6 +693,15 @@ define('stimdb1/tests/routes/creators/new.jshint', ['exports'], function (export
     assert.ok(true, 'routes/creators/new.js should pass jshint.');
   });
 });
+define('stimdb1/tests/routes/stimsets/new.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | routes/stimsets/new.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'routes/stimsets/new.js should pass jshint.');
+  });
+});
 define('stimdb1/tests/routes/stimsets/search.jshint', ['exports'], function (exports) {
   'use strict';
 
@@ -886,6 +895,27 @@ define('stimdb1/tests/unit/routes/contact-test.jshint', ['exports'], function (e
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'unit/routes/contact-test.js should pass jshint.');
+  });
+});
+define('stimdb1/tests/unit/routes/stimsets/new-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
+
+  (0, _emberQunit.moduleFor)('route:stimsets/new', 'Unit | Route | stimsets/new', {
+    // Specify the other units that are required for this test.
+    // needs: ['controller:foo']
+  });
+
+  (0, _emberQunit.test)('it exists', function (assert) {
+    var route = this.subject();
+    assert.ok(route);
+  });
+});
+define('stimdb1/tests/unit/routes/stimsets/new-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | unit/routes/stimsets/new-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/routes/stimsets/new-test.js should pass jshint.');
   });
 });
 define('stimdb1/tests/unit/routes/stimsets/search-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {

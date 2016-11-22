@@ -1,4 +1,4 @@
-// app/components/seeder-block.js
+// app/components/seeder-block.js 
 import Ember from 'ember';
 
 const MAX_VALUE = 50;

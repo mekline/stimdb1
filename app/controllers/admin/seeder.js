@@ -1,4 +1,4 @@
-// app/controllers/admin/seeder.js
+// app/controllers/admin/seeder.js 
 import Ember from 'ember';
 import Faker from 'faker';
 
@@ -34,7 +34,7 @@ export default Ember.Controller.extend({
       for (let i = 0; i < counter; i++) {
         const isTheLast = i === counter-1;
         const myCreator = this._selectRandomCreator();
-        const myStimSet = this._saveRandomStimSet(myCreator, isTheLast);
+        this._saveRandomStimSet(myCreator, isTheLast);
       }
     },
 

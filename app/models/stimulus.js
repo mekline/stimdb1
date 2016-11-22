@@ -1,4 +1,5 @@
-import DS from 'ember-data';
+import DS from 'ember-data'; 
+import Faker from 'faker';
 
 export default DS.Model.extend({
   stimname: DS.attr('string'),
@@ -9,10 +10,10 @@ export default DS.Model.extend({
   
 
   randomize(stimset){ //Pass in which stimset this is being added to...
-  	const whichStim = Faker.hacker.adjective() + Faker.adjective.noun();
-  	this.set('stimname', whichStim)
-    this.set('mediaFilename', whichStim + '.' + Faker.stystem.commonFileExt())
-  	this.set('stimset', stimset)
+  	const whichStim = Faker.hacker.adjective() + Faker.hacker.noun();
+  	this.set('stimname', whichStim);
+    this.set('mediaFilename', whichStim + '.' + Faker.system.commonFileExt());
+  	this.set('stimset', stimset);
   	this.set('stimSource', 'faker generated');
 
   	return this; //not sure why needed yet

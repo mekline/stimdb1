@@ -152,7 +152,7 @@ define('stimdb1/controllers/admin/seeder', ['exports', 'ember', 'faker'], functi
         for (var i = 0; i < counter; i++) {
           var isTheLast = i === counter - 1;
           var myCreator = this._selectRandomCreator();
-          var myStimSet = this._saveRandomStimSet(myCreator, isTheLast);
+          this._saveRandomStimSet(myCreator, isTheLast);
         }
       },
 
@@ -488,7 +488,7 @@ define('stimdb1/models/message', ['exports', 'ember-data'], function (exports, _
     messagetxt: _emberData['default'].attr('string')
   });
 });
-define('stimdb1/models/stimset', ['exports', 'ember-data'], function (exports, _emberData) {
+define('stimdb1/models/stimset', ['exports', 'ember-data', 'faker'], function (exports, _emberData, _faker) {
   exports['default'] = _emberData['default'].Model.extend({
 
     setname: _emberData['default'].attr('string'),
@@ -497,24 +497,23 @@ define('stimdb1/models/stimset', ['exports', 'ember-data'], function (exports, _
     setSource: _emberData['default'].attr('string'), //record whether this is a fake thing!
 
     creator: _emberData['default'].belongsTo('creator'),
-    stims: _emberData['default'].hasMany('stimulus'),
+    //stims: DS.hasMany('stimulus'),
 
     randomize: function randomize(creator) {
       //specify who made this stim set
-      var whichSet = Faker.hacker.adjective() + ' ' + Faker.hacker.adjective() + ' Stimuli';
-      this.set('setname', whichSet), this.set('citation', creator.name + ' et al.(' + this._randomYear() + ') A paper about ' + whichSet);
-      this.set('doi', 'http://DOI.' + Faker.internet.ip()), this.set('creator', creator), this.set('setSource', 'faker generated');
+      var whichSet = _faker['default'].hacker.adjective() + ' ' + _faker['default'].hacker.adjective() + ' Stimuli';
+      this.set('setname', whichSet);
+      this.set('citation', creator.name + ' et al.(' + _faker['default'].random.number(1975, 2015) + ') A paper about ' + whichSet);
+      this.set('doi', 'http://DOI.' + _faker['default'].internet.ip());
+      this.set('creator', creator);
+      this.set('setSource', 'faker generated');
 
       return this; //not sure why needed yet
-    },
-
-    _randomYear: function _randomYear() {
-      return new Date(this._getRandomArbitrary(1900, 2015).toPrecision(4));
     }
 
   });
 });
-define('stimdb1/models/stimulus', ['exports', 'ember-data'], function (exports, _emberData) {
+define('stimdb1/models/stimulus', ['exports', 'ember-data', 'faker'], function (exports, _emberData, _faker) {
   exports['default'] = _emberData['default'].Model.extend({
     stimname: _emberData['default'].attr('string'),
     mediaFilename: _emberData['default'].attr('string'),
@@ -524,9 +523,9 @@ define('stimdb1/models/stimulus', ['exports', 'ember-data'], function (exports, 
 
     randomize: function randomize(stimset) {
       //Pass in which stimset this is being added to...
-      var whichStim = Faker.hacker.adjective() + Faker.adjective.noun();
+      var whichStim = _faker['default'].hacker.adjective() + _faker['default'].hacker.noun();
       this.set('stimname', whichStim);
-      this.set('mediaFilename', whichStim + '.' + Faker.stystem.commonFileExt());
+      this.set('mediaFilename', whichStim + '.' + _faker['default'].system.commonFileExt());
       this.set('stimset', stimset);
       this.set('stimSource', 'faker generated');
 
@@ -3394,7 +3393,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("stimdb1/app")["default"].create({"name":"stimdb1","version":"0.0.0+47139f33"});
+  require("stimdb1/app")["default"].create({"name":"stimdb1","version":"0.0.0+fd09169b"});
 }
 
 /* jshint ignore:end */

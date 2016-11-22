@@ -16,9 +16,9 @@ export default DS.Model.extend({
   isValidContact: Ember.computed.and('isValidEmail','isValidName', 'isValidWebsite'),
 
   randomize(){ //if this gets called on a creator instance, all values replaced with fake data!
-  	this.set('name', Faker.name.firstName() + ' ' + Faker.name.lastName())
-    this.set('emailaddress', Faker.internet.exampleEmail())
-  	this.set('website', Faker.internet.url())
+  	this.set('name', Faker.name.firstName() + ' ' + Faker.name.lastName());
+    this.set('emailaddress', Faker.internet.exampleEmail());
+  	this.set('website', Faker.internet.url());
   	this.set('creatorSource', 'faker generated');
 
   	return this; //not sure why needed yet

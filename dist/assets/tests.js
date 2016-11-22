@@ -69,7 +69,7 @@ define('stimdb1/tests/controllers/admin/seeder.jshint', ['exports'], function (e
   QUnit.module('JSHint | controllers/admin/seeder.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(false, 'controllers/admin/seeder.js should pass jshint.\ncontrollers/admin/seeder.js: line 37, col 15, \'myStimSet\' is defined but never used.\n\n1 error');
+    assert.ok(true, 'controllers/admin/seeder.js should pass jshint.');
   });
 });
 define('stimdb1/tests/controllers/contact.jshint', ['exports'], function (exports) {
@@ -1047,7 +1047,7 @@ define('stimdb1/tests/models/creator.jshint', ['exports'], function (exports) {
   QUnit.module('JSHint | models/creator.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(false, 'models/creator.js should pass jshint.\nmodels/creator.js: line 19, col 77, Missing semicolon.\nmodels/creator.js: line 20, col 60, Missing semicolon.\nmodels/creator.js: line 21, col 48, Missing semicolon.\n\n3 errors');
+    assert.ok(true, 'models/creator.js should pass jshint.');
   });
 });
 define('stimdb1/tests/models/message.jshint', ['exports'], function (exports) {
@@ -1065,7 +1065,7 @@ define('stimdb1/tests/models/stimset.jshint', ['exports'], function (exports) {
   QUnit.module('JSHint | models/stimset.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(false, 'models/stimset.js should pass jshint.\nmodels/stimset.js: line 16, col 106, Expected an assignment or function call and instead saw an expression.\nmodels/stimset.js: line 16, col 107, Missing semicolon.\nmodels/stimset.js: line 19, col 46, Expected an assignment or function call and instead saw an expression.\nmodels/stimset.js: line 14, col 24, \'Faker\' is not defined.\nmodels/stimset.js: line 14, col 57, \'Faker\' is not defined.\nmodels/stimset.js: line 17, col 39, \'Faker\' is not defined.\n\n6 errors');
+    assert.ok(true, 'models/stimset.js should pass jshint.');
   });
 });
 define('stimdb1/tests/models/stimulus.jshint', ['exports'], function (exports) {
@@ -1074,7 +1074,7 @@ define('stimdb1/tests/models/stimulus.jshint', ['exports'], function (exports) {
   QUnit.module('JSHint | models/stimulus.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(false, 'models/stimulus.js should pass jshint.\nmodels/stimulus.js: line 13, col 38, Missing semicolon.\nmodels/stimulus.js: line 14, col 79, Missing semicolon.\nmodels/stimulus.js: line 15, col 35, Missing semicolon.\nmodels/stimulus.js: line 12, col 25, \'Faker\' is not defined.\nmodels/stimulus.js: line 12, col 52, \'Faker\' is not defined.\nmodels/stimulus.js: line 14, col 49, \'Faker\' is not defined.\n\n6 errors');
+    assert.ok(true, 'models/stimulus.js should pass jshint.');
   });
 });
 define('stimdb1/tests/resolver.jshint', ['exports'], function (exports) {

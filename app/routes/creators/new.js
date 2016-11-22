@@ -21,7 +21,7 @@ export default Ember.Route.extend({
   actions: {
 
     saveCreator(newCreator) {
-      newCreator.save().then(() => this.transitionTo('creators'));
+      newCreator.save().then(() => this.transitionTo('creators.listall'));
     },
 
     willTransition() {

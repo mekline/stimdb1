@@ -1,5 +1,3 @@
-//gonna try and kill this
-
 import Ember from 'ember';
 
 export default Ember.Controller.extend({

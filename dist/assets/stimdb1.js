@@ -53,6 +53,64 @@ define('stimdb1/components/creator-item-form', ['exports', 'ember'], function (e
 define('stimdb1/components/creator-item', ['exports', 'ember'], function (exports, _ember) {
   exports['default'] = _ember['default'].Component.extend({});
 });
+define('stimdb1/components/fader-label', ['exports', 'ember'], function (exports, _ember) {
+  exports['default'] = _ember['default'].Component.extend({
+    tagName: 'span',
+
+    classNames: ['label label-success label-fade'],
+    classNameBindings: ['isShowing:label-show'],
+
+    isShowing: false,
+
+    isShowingChanged: _ember['default'].observer('isShowing', function () {
+      var _this = this;
+
+      _ember['default'].run.later(function () {
+        return _this.set('isShowing', false);
+      }, 3000);
+    })
+  });
+});
+// app/components/fader-label.js
+define('stimdb1/components/number-box', ['exports', 'ember'], function (exports, _ember) {
+	exports['default'] = _ember['default'].Component.extend({
+
+		classNames: ['panel', 'panel-warning']
+
+	});
+});
+define('stimdb1/components/seeder-block', ['exports', 'ember'], function (exports, _ember) {
+
+  var MAX_VALUE = 50;
+
+  exports['default'] = _ember['default'].Component.extend({
+
+    counter: null,
+
+    isCounterValid: _ember['default'].computed.lte('counter', MAX_VALUE),
+    placeholder: 'Max ' + MAX_VALUE,
+
+    createReady: false,
+    deleteReady: false,
+
+    actions: {
+
+      generateAction: function generateAction() {
+        if (this.get('isCounterValid')) {
+
+          // Action up to Seeder Controller with the requested amount
+          this.sendAction('generateAction', this.get('counter'));
+        }
+      },
+
+      deleteAction: function deleteAction() {
+        this.sendAction('deleteAction');
+      }
+
+    }
+  });
+});
+// app/components/seeder-block.js
 define('stimdb1/components/smart-link-to', ['exports', 'ember-cli-smart-link-to/components/smart-link-to'], function (exports, _emberCliSmartLinkToComponentsSmartLinkTo) {
   Object.defineProperty(exports, 'default', {
     enumerable: true,
@@ -61,6 +119,116 @@ define('stimdb1/components/smart-link-to', ['exports', 'ember-cli-smart-link-to/
     }
   });
 });
+define('stimdb1/controllers/admin/seeder', ['exports', 'ember', 'faker'], function (exports, _ember, _faker) {
+  exports['default'] = _ember['default'].Controller.extend({
+
+    // If you haven't mapped these properties in Route in setupController hook, you can alias them here, for example:
+    // libraries: Ember.computed.alias('model.libraries')
+    creators: [],
+    stimsets: [],
+    stimuli: [],
+
+    actions: {
+
+      generateCreators: function generateCreators(num) {
+        var counter = parseInt(num);
+
+        for (var i = 0; i < counter; i++) {
+          var isTheLast = i === counter - 1;
+          this._saveRandomCreator(isTheLast);
+        }
+      },
+
+      deleteCreators: function deleteCreators() {
+        this._destroyAll(this.get('creators')); //TODO: filter to just the fake ones?
+
+        // Data down via seeder-block to fader-label that we ready to show the label
+        this.set('creDelDone', true);
+      },
+
+      generateStimSetsandStim: function generateStimSetsandStim(num) {
+        var counter = parseInt(num);
+
+        for (var i = 0; i < counter; i++) {
+          var isTheLast = i === counter - 1;
+          var myCreator = this._selectRandomCreator();
+          var myStimSet = this._saveRandomStimSet(myCreator, isTheLast);
+        }
+      },
+
+      deleteStimsSetsandStims: function deleteStimsSetsandStims() {
+        this._destroyAll(this.get('stimuli'));
+        this._destroyAll(this.get('stimsets'));
+
+        // Data down via seeder-block to fader-label that we ready to show the label
+        this.set('stimDelDone', true);
+      }
+    },
+
+    // Private methods
+
+    _saveRandomCreator: function _saveRandomCreator(isLast) {
+      var _this = this;
+
+      var randomCreator = this.store.createRecord('creator').randomize();
+
+      randomCreator.save().then(function () {
+        if (isLast) {
+
+          // Data down via seeder-block to fader-label that we ready to show the label
+          _this.set('creDone', true);
+        }
+      });
+    },
+
+    _selectRandomCreator: function _selectRandomCreator() {
+      var creators = this.get('creators');
+      var creatorCounter = creators.get('length');
+
+      // Create a new array from ids
+      var creatorIds = creators.map(function (cre) {
+        return cre.get('id');
+      });
+
+      // Randomly pick one id from the libraryIds array and return the library
+      var randomNumber = _faker['default'].random.number(creatorCounter - 1);
+      var randomCreator = creators.findBy('id', creatorIds[randomNumber]);
+
+      return randomCreator;
+    },
+
+    _saveRandomStimSet: function _saveRandomStimSet(creator, isLast) {
+      var _this2 = this;
+
+      var newStimSet = this.store.createRecord('stimset').randomize(creator);
+      this._generateSomeStimuli(newStimSet);
+      newStimSet.save().then(function () {
+        if (isLast) {
+
+          // Data down via seeder-block to fader-label that we ready to show the label
+          _this2.set('authDone', true);
+        }
+      });
+      return newStimSet;
+    },
+
+    _generateSomeStimuli: function _generateSomeStimuli(stimset) {
+      var stimCounter = _faker['default'].random.number(10);
+
+      for (var j = 0; j < stimCounter; j++) {
+        this.store.createRecord('stimulus').randomize(stimset).save();
+      }
+    },
+
+    _destroyAll: function _destroyAll(records) {
+      records.forEach(function (item) {
+        return item.destroyRecord();
+      });
+    }
+
+  });
+});
+// app/controllers/admin/seeder.js
 define('stimdb1/controllers/contact', ['exports', 'ember'], function (exports, _ember) {
   exports['default'] = _ember['default'].Controller.extend({
 
@@ -175,6 +343,20 @@ define('stimdb1/initializers/ember-data', ['exports', 'ember-data/setup-containe
     initialize: _emberDataSetupContainer['default']
   };
 });
+define('stimdb1/initializers/ember-faker', ['exports'], function (exports) {
+  exports.initialize = initialize;
+
+  function initialize() /* container, application */{
+    // application.inject('route', 'foo', 'service:foo');
+  }
+
+  ;
+
+  exports['default'] = {
+    name: 'ember-faker',
+    initialize: initialize
+  };
+});
 define('stimdb1/initializers/emberfire', ['exports', 'emberfire/initializers/emberfire'], function (exports, _emberfireInitializersEmberfire) {
   exports['default'] = _emberfireInitializersEmberfire['default'];
 });
@@ -275,16 +457,29 @@ define("stimdb1/instance-initializers/ember-data", ["exports", "ember-data/-priv
     initialize: _emberDataPrivateInstanceInitializersInitializeStoreService["default"]
   };
 });
-define('stimdb1/models/creator', ['exports', 'ember-data'], function (exports, _emberData) {
+define('stimdb1/models/creator', ['exports', 'ember-data', 'ember', 'faker'], function (exports, _emberData, _ember, _faker) {
   exports['default'] = _emberData['default'].Model.extend({
-    stimsets: _emberData['default'].hasMany('stimset'),
     name: _emberData['default'].attr('string'),
     emailaddress: _emberData['default'].attr('string'),
     website: _emberData['default'].attr('string'),
+    creatorSource: _emberData['default'].attr('string'), //record whether this is a fake thing!
 
-    isValidName: Ember.computed.notEmpty('name'),
-    isValidEmail: Ember.computed.match('emailaddress', /^.+@.+\..+$/),
-    isValidContact: Ember.computed.and('isValidEmail', 'isValidName')
+    stimsets: _emberData['default'].hasMany('stimset', { inverse: 'creator', async: true }),
+
+    isValidName: _ember['default'].computed.notEmpty('name'),
+    isValidEmail: _ember['default'].computed.match('emailaddress', /^.+@.+\..+$/),
+    isValidWebsite: _ember['default'].computed.match('website', /^.+/), //To add: website validataion + glyphicon
+    isValidContact: _ember['default'].computed.and('isValidEmail', 'isValidName', 'isValidWebsite'),
+
+    randomize: function randomize() {
+      //if this gets called on a creator instance, all values replaced with fake data!
+      this.set('name', _faker['default'].name.firstName() + ' ' + _faker['default'].name.lastName());
+      this.set('emailaddress', _faker['default'].internet.exampleEmail());
+      this.set('website', _faker['default'].internet.url());
+      this.set('creatorSource', 'faker generated');
+
+      return this; //not sure why needed yet
+    }
   });
 });
 define('stimdb1/models/message', ['exports', 'ember-data'], function (exports, _emberData) {
@@ -295,17 +490,49 @@ define('stimdb1/models/message', ['exports', 'ember-data'], function (exports, _
 });
 define('stimdb1/models/stimset', ['exports', 'ember-data'], function (exports, _emberData) {
   exports['default'] = _emberData['default'].Model.extend({
+
     setname: _emberData['default'].attr('string'),
-    creator: _emberData['default'].belongsTo('creator'),
     citation: _emberData['default'].attr('string'), //text version
     doi: _emberData['default'].attr('string'), //doi link
-    stims: _emberData['default'].hasMany('stimulus')
+    setSource: _emberData['default'].attr('string'), //record whether this is a fake thing!
+
+    creator: _emberData['default'].belongsTo('creator'),
+    stims: _emberData['default'].hasMany('stimulus'),
+
+    randomize: function randomize(creator) {
+      //specify who made this stim set
+      var whichSet = Faker.hacker.adjective() + ' ' + Faker.hacker.adjective() + ' Stimuli';
+      this.set('setname', whichSet), this.set('citation', creator.name + ' et al.(' + this._randomYear() + ') A paper about ' + whichSet);
+      this.set('doi', 'http://DOI.' + Faker.internet.ip()), this.set('creator', creator), this.set('setSource', 'faker generated');
+
+      return this; //not sure why needed yet
+    },
+
+    _randomYear: function _randomYear() {
+      return new Date(this._getRandomArbitrary(1900, 2015).toPrecision(4));
+    }
+
   });
 });
 define('stimdb1/models/stimulus', ['exports', 'ember-data'], function (exports, _emberData) {
   exports['default'] = _emberData['default'].Model.extend({
+    stimname: _emberData['default'].attr('string'),
     mediaFilename: _emberData['default'].attr('string'),
-    stimset: _emberData['default'].belongsTo('stimset')
+    stimSource: _emberData['default'].attr('string'), //record whether this is a fake thing!
+
+    stimset: _emberData['default'].belongsTo('stimset'),
+
+    randomize: function randomize(stimset) {
+      //Pass in which stimset this is being added to...
+      var whichStim = Faker.hacker.adjective() + Faker.adjective.noun();
+      this.set('stimname', whichStim);
+      this.set('mediaFilename', whichStim + '.' + Faker.stystem.commonFileExt());
+      this.set('stimset', stimset);
+      this.set('stimSource', 'faker generated');
+
+      return this; //not sure why needed yet
+    }
+
   });
 });
 define('stimdb1/resolver', ['exports', 'ember-resolver'], function (exports, _emberResolver) {
@@ -324,6 +551,7 @@ define('stimdb1/router', ['exports', 'ember', 'stimdb1/config/environment'], fun
 
     this.route('admin', function () {
       this.route('messages');
+      this.route('seeder');
     });
 
     this.route('creators', function () {
@@ -354,8 +582,29 @@ define('stimdb1/routes/admin/messages', ['exports', 'ember'], function (exports,
   });
 });
 // app/routes/admin/invitations.js
+define('stimdb1/routes/admin/seeder', ['exports', 'ember'], function (exports, _ember) {
+  exports['default'] = _ember['default'].Route.extend({
+
+    //use the below model () and setupController to bring multiple models on a route
+
+    model: function model() {
+      return _ember['default'].RSVP.hash({
+        creators: this.store.findAll('creator'),
+        stimsets: this.store.findAll('stimset'),
+        stimuli: this.store.findAll('stimulus')
+      });
+    },
+
+    setupController: function setupController(controller, model) {
+      controller.set('creators', model.creators);
+      controller.set('stimsets', model.stimsets);
+      controller.set('stimuli', model.stimuli);
+    }
+
+  });
+});
 define('stimdb1/routes/contact', ['exports', 'ember'], function (exports, _ember) {
-  exports['default'] = _ember['default'].Route.extend({});
+	exports['default'] = _ember['default'].Route.extend({});
 });
 define('stimdb1/routes/creators/edit', ['exports', 'ember'], function (exports, _ember) {
   exports['default'] = _ember['default'].Route.extend({
@@ -448,7 +697,7 @@ define('stimdb1/routes/creators/new', ['exports', 'ember'], function (exports, _
         var _this = this;
 
         newCreator.save().then(function () {
-          return _this.transitionTo('creators');
+          return _this.transitionTo('creators.listall');
         });
       },
 
@@ -806,6 +1055,100 @@ define("stimdb1/templates/admin/messages", ["exports"], function (exports) {
     };
   })());
 });
+define("stimdb1/templates/admin/seeder", ["exports"], function (exports) {
+  exports["default"] = Ember.HTMLBars.template((function () {
+    return {
+      meta: {
+        "revision": "Ember@2.8.2",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 26,
+            "column": 0
+          }
+        },
+        "moduleName": "stimdb1/templates/admin/seeder.hbs"
+      },
+      isEmpty: false,
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createComment(" app/templates/admin/seeder.hbs ");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("h1");
+        var el2 = dom.createTextNode("Database Seeder");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("p");
+        var el2 = dom.createTextNode("This is a place to summarize the dataset so far. Right now it doesn't distinguish\n counts of 'real' and fakedata entries that just exist to test database relations.");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("div");
+        dom.setAttribute(el1, "class", "row");
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "col-md-4");
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "col-md-4");
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "col-md-4");
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var element0 = dom.childAt(fragment, [6]);
+        var morphs = new Array(5);
+        morphs[0] = dom.createMorphAt(dom.childAt(element0, [1]), 0, 0);
+        morphs[1] = dom.createMorphAt(dom.childAt(element0, [3]), 0, 0);
+        morphs[2] = dom.createMorphAt(dom.childAt(element0, [5]), 0, 0);
+        morphs[3] = dom.createMorphAt(fragment, 8, 8, contextualElement);
+        morphs[4] = dom.createMorphAt(fragment, 10, 10, contextualElement);
+        return morphs;
+      },
+      statements: [["inline", "number-box", [], ["title", "Creators", "number", ["subexpr", "@mut", [["get", "creators.length", ["loc", [null, [8, 61], [8, 76]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [8, 24], [8, 78]]], 0, 0], ["inline", "number-box", [], ["title", "Stimulus Sets", "number", ["subexpr", "@mut", [["get", "stimsets.length", ["loc", [null, [9, 66], [9, 81]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [9, 24], [9, 83]]], 0, 0], ["inline", "number-box", [], ["title", "Stimuli", "number", ["subexpr", "@mut", [["get", "stimuli.length", ["loc", [null, [10, 60], [10, 74]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [10, 24], [10, 76]]], 0, 0], ["inline", "seeder-block", [], ["sectionTitle", "Creators", "generateAction", "generateCreators", "deleteAction", "deleteCreators", "createReady", ["subexpr", "@mut", [["get", "creDone", ["loc", [null, [17, 16], [17, 23]]], 0, 0, 0, 0]], [], [], 0, 0], "deleteReady", ["subexpr", "@mut", [["get", "creDelDone", ["loc", [null, [18, 16], [18, 26]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [13, 0], [18, 28]]], 0, 0], ["inline", "seeder-block", [], ["sectionTitle", "Stimsets", "generateAction", "generateStimSetsandStim", "deleteAction", "deleteStimSetsandStim", "createReady", ["subexpr", "@mut", [["get", "stimDone", ["loc", [null, [24, 16], [24, 24]]], 0, 0, 0, 0]], [], [], 0, 0], "deleteReady", ["subexpr", "@mut", [["get", "stimDelDone", ["loc", [null, [25, 16], [25, 27]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [20, 0], [25, 29]]], 0, 0]],
+      locals: [],
+      templates: []
+    };
+  })());
+});
 define("stimdb1/templates/application", ["exports"], function (exports) {
   exports["default"] = Ember.HTMLBars.template((function () {
     return {
@@ -1104,7 +1447,7 @@ define("stimdb1/templates/components/creator-item", ["exports"], function (expor
             "column": 0
           },
           "end": {
-            "line": 18,
+            "line": 19,
             "column": 0
           }
         },
@@ -1154,6 +1497,14 @@ define("stimdb1/templates/components/creator-item", ["exports"], function (expor
         dom.appendChild(el4, el5);
         dom.appendChild(el3, el4);
         dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n		");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("p");
+        var el4 = dom.createTextNode("Source: ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
         var el3 = dom.createTextNode("\n	");
         dom.appendChild(el2, el3);
         dom.appendChild(el1, el2);
@@ -1179,17 +1530,312 @@ define("stimdb1/templates/components/creator-item", ["exports"], function (expor
         var element0 = dom.childAt(fragment, [0]);
         var element1 = dom.childAt(element0, [3]);
         var element2 = dom.childAt(element1, [3, 1]);
-        var morphs = new Array(5);
+        var morphs = new Array(6);
         morphs[0] = dom.createMorphAt(dom.childAt(element0, [1, 1]), 0, 0);
         morphs[1] = dom.createMorphAt(dom.childAt(element1, [1]), 1, 1);
         morphs[2] = dom.createAttrMorph(element2, 'href');
         morphs[3] = dom.createMorphAt(element2, 0, 0);
-        morphs[4] = dom.createMorphAt(dom.childAt(element0, [5]), 1, 1);
+        morphs[4] = dom.createMorphAt(dom.childAt(element1, [5]), 1, 1);
+        morphs[5] = dom.createMorphAt(dom.childAt(element0, [5]), 1, 1);
         return morphs;
       },
-      statements: [["content", "item.name", ["loc", [null, [4, 27], [4, 40]]], 0, 0, 0, 0], ["content", "item.emailaddress", ["loc", [null, [8, 20], [8, 41]]], 0, 0, 0, 0], ["attribute", "href", ["get", "item.website", ["loc", [null, [9, 24], [9, 36]]], 0, 0, 0, 0], 0, 0, 0, 0], ["content", "item.website", ["loc", [null, [9, 39], [9, 55]]], 0, 0, 0, 0], ["content", "yield", ["loc", [null, [13, 2], [13, 11]]], 0, 0, 0, 0]],
+      statements: [["content", "item.name", ["loc", [null, [4, 27], [4, 40]]], 0, 0, 0, 0], ["content", "item.emailaddress", ["loc", [null, [8, 20], [8, 41]]], 0, 0, 0, 0], ["attribute", "href", ["get", "item.website", ["loc", [null, [9, 24], [9, 36]]], 0, 0, 0, 0], 0, 0, 0, 0], ["content", "item.website", ["loc", [null, [9, 39], [9, 55]]], 0, 0, 0, 0], ["content", "item.creatorSource", ["loc", [null, [10, 13], [10, 35]]], 0, 0, 0, 0], ["content", "yield", ["loc", [null, [14, 2], [14, 11]]], 0, 0, 0, 0]],
       locals: [],
       templates: []
+    };
+  })());
+});
+define("stimdb1/templates/components/fader-label", ["exports"], function (exports) {
+  exports["default"] = Ember.HTMLBars.template((function () {
+    return {
+      meta: {
+        "revision": "Ember@2.8.2",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 2,
+            "column": 0
+          }
+        },
+        "moduleName": "stimdb1/templates/components/fader-label.hbs"
+      },
+      isEmpty: false,
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var morphs = new Array(1);
+        morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+        dom.insertBoundary(fragment, 0);
+        return morphs;
+      },
+      statements: [["content", "yield", ["loc", [null, [1, 0], [1, 9]]], 0, 0, 0, 0]],
+      locals: [],
+      templates: []
+    };
+  })());
+});
+define("stimdb1/templates/components/number-box", ["exports"], function (exports) {
+  exports["default"] = Ember.HTMLBars.template((function () {
+    return {
+      meta: {
+        "revision": "Ember@2.8.2",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 6,
+            "column": 0
+          }
+        },
+        "moduleName": "stimdb1/templates/components/number-box.hbs"
+      },
+      isEmpty: false,
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createComment(" app/templates/components/number-box.hbs ");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("div");
+        dom.setAttribute(el1, "class", "panel-heading");
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("h3");
+        dom.setAttribute(el2, "class", "text-center");
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("h1");
+        dom.setAttribute(el2, "class", "text-center");
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var element0 = dom.childAt(fragment, [2]);
+        var morphs = new Array(2);
+        morphs[0] = dom.createMorphAt(dom.childAt(element0, [1]), 0, 0);
+        morphs[1] = dom.createMorphAt(dom.childAt(element0, [3]), 0, 0);
+        return morphs;
+      },
+      statements: [["content", "title", ["loc", [null, [3, 26], [3, 35]]], 0, 0, 0, 0], ["inline", "if", [["get", "number", ["loc", [null, [4, 31], [4, 37]]], 0, 0, 0, 0], ["get", "number", ["loc", [null, [4, 38], [4, 44]]], 0, 0, 0, 0], "..."], [], ["loc", [null, [4, 26], [4, 52]]], 0, 0]],
+      locals: [],
+      templates: []
+    };
+  })());
+});
+define("stimdb1/templates/components/seeder-block", ["exports"], function (exports) {
+  exports["default"] = Ember.HTMLBars.template((function () {
+    var child0 = (function () {
+      return {
+        meta: {
+          "revision": "Ember@2.8.2",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 14,
+              "column": 4
+            },
+            "end": {
+              "line": 14,
+              "column": 50
+            }
+          },
+          "moduleName": "stimdb1/templates/components/seeder-block.hbs"
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("Created!");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes() {
+          return [];
+        },
+        statements: [],
+        locals: [],
+        templates: []
+      };
+    })();
+    var child1 = (function () {
+      return {
+        meta: {
+          "revision": "Ember@2.8.2",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 17,
+              "column": 4
+            },
+            "end": {
+              "line": 17,
+              "column": 50
+            }
+          },
+          "moduleName": "stimdb1/templates/components/seeder-block.hbs"
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("Deleted!");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes() {
+          return [];
+        },
+        statements: [],
+        locals: [],
+        templates: []
+      };
+    })();
+    return {
+      meta: {
+        "revision": "Ember@2.8.2",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 20,
+            "column": 6
+          }
+        },
+        "moduleName": "stimdb1/templates/components/seeder-block.hbs"
+      },
+      isEmpty: false,
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createComment(" app/templates/components/seeder-block.hbs ");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("div");
+        dom.setAttribute(el1, "class", "well well-sm extra-padding-bottom");
+        var el2 = dom.createTextNode("\n\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("h3");
+        var el3 = dom.createTextNode("Generate fake ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "form-inline");
+        var el3 = dom.createTextNode("\n  \n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("div");
+        var el4 = dom.createTextNode("\n      ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("label");
+        dom.setAttribute(el4, "class", "control-label");
+        var el5 = dom.createTextNode("Number of new records:");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n      ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n    ");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    \n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("button");
+        dom.setAttribute(el3, "class", "btn btn-primary");
+        var el4 = dom.createTextNode("Generate ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    \n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("button");
+        dom.setAttribute(el3, "class", "btn btn-danger");
+        var el4 = dom.createTextNode("Delete All ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  \n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var element0 = dom.childAt(fragment, [2]);
+        var element1 = dom.childAt(element0, [3]);
+        var element2 = dom.childAt(element1, [1]);
+        var element3 = dom.childAt(element1, [3]);
+        var element4 = dom.childAt(element1, [7]);
+        var morphs = new Array(10);
+        morphs[0] = dom.createMorphAt(dom.childAt(element0, [1]), 1, 1);
+        morphs[1] = dom.createAttrMorph(element2, 'class');
+        morphs[2] = dom.createMorphAt(element2, 3, 3);
+        morphs[3] = dom.createAttrMorph(element3, 'disabled');
+        morphs[4] = dom.createElementMorph(element3);
+        morphs[5] = dom.createMorphAt(element3, 1, 1);
+        morphs[6] = dom.createMorphAt(element1, 5, 5);
+        morphs[7] = dom.createElementMorph(element4);
+        morphs[8] = dom.createMorphAt(element4, 1, 1);
+        morphs[9] = dom.createMorphAt(element1, 9, 9);
+        return morphs;
+      },
+      statements: [["content", "sectionTitle", ["loc", [null, [4, 20], [4, 36]]], 0, 0, 0, 0], ["attribute", "class", ["concat", ["form-group has-feedback ", ["subexpr", "unless", [["get", "isCounterValid", ["loc", [null, [8, 49], [8, 63]]], 0, 0, 0, 0], "has-error"], [], ["loc", [null, [8, 40], [8, 77]]], 0, 0]], 0, 0, 0, 0, 0], 0, 0, 0, 0], ["inline", "input", [], ["value", ["subexpr", "@mut", [["get", "counter", ["loc", [null, [10, 20], [10, 27]]], 0, 0, 0, 0]], [], [], 0, 0], "class", "form-control", "placeholder", ["subexpr", "@mut", [["get", "placeholder", ["loc", [null, [10, 61], [10, 72]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [10, 6], [10, 74]]], 0, 0], ["attribute", "disabled", ["subexpr", "if", [["get", "isCounterValid", ["loc", [null, [13, 78], [13, 92]]], 0, 0, 0, 0], false, true], [], ["loc", [null, [null, null], [13, 105]]], 0, 0], 0, 0, 0, 0], ["element", "action", ["generateAction"], [], ["loc", [null, [13, 36], [13, 63]]], 0, 0], ["content", "sectionTitle", ["loc", [null, [13, 115], [13, 131]]], 0, 0, 0, 0], ["block", "fader-label", [], ["isShowing", ["subexpr", "@mut", [["get", "createReady", ["loc", [null, [14, 29], [14, 40]]], 0, 0, 0, 0]], [], [], 0, 0]], 0, null, ["loc", [null, [14, 4], [14, 66]]]], ["element", "action", ["deleteAction"], [], ["loc", [null, [16, 35], [16, 60]]], 0, 0], ["content", "sectionTitle", ["loc", [null, [16, 72], [16, 88]]], 0, 0, 0, 0], ["block", "fader-label", [], ["isShowing", ["subexpr", "@mut", [["get", "deleteReady", ["loc", [null, [17, 29], [17, 40]]], 0, 0, 0, 0]], [], [], 0, 0]], 1, null, ["loc", [null, [17, 4], [17, 66]]]]],
+      locals: [],
+      templates: [child0, child1]
     };
   })());
 });
@@ -1839,7 +2485,7 @@ define("stimdb1/templates/index", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 11,
+            "line": 12,
             "column": 5
           }
         },
@@ -1880,6 +2526,12 @@ define("stimdb1/templates/index", ["exports"], function (exports) {
         dom.appendChild(el1, el2);
         var el2 = dom.createElement("li");
         var el3 = dom.createTextNode(" paragraph formatting in css");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("li");
+        var el3 = dom.createTextNode(" Refactor the contact form into the contact model!");
         dom.appendChild(el2, el3);
         dom.appendChild(el1, el2);
         var el2 = dom.createTextNode("\n");
@@ -2059,7 +2711,7 @@ define("stimdb1/templates/navbar", ["exports"], function (exports) {
             },
             "end": {
               "line": 18,
-              "column": 65
+              "column": 73
             }
           },
           "moduleName": "stimdb1/templates/navbar.hbs"
@@ -2161,6 +2813,44 @@ define("stimdb1/templates/navbar", ["exports"], function (exports) {
         templates: []
       };
     })();
+    var child7 = (function () {
+      return {
+        meta: {
+          "revision": "Ember@2.8.2",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 29,
+              "column": 10
+            },
+            "end": {
+              "line": 29,
+              "column": 80
+            }
+          },
+          "moduleName": "stimdb1/templates/navbar.hbs"
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createElement("a");
+          dom.setAttribute(el1, "href", "");
+          var el2 = dom.createTextNode("Database seeder");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes() {
+          return [];
+        },
+        statements: [],
+        locals: [],
+        templates: []
+      };
+    })();
     return {
       meta: {
         "revision": "Ember@2.8.2",
@@ -2171,7 +2861,7 @@ define("stimdb1/templates/navbar", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 35,
+            "line": 36,
             "column": 6
           }
         },
@@ -2298,6 +2988,10 @@ define("stimdb1/templates/navbar", ["exports"], function (exports) {
         dom.appendChild(el6, el7);
         var el7 = dom.createTextNode("\n          ");
         dom.appendChild(el6, el7);
+        var el7 = dom.createComment("");
+        dom.appendChild(el6, el7);
+        var el7 = dom.createTextNode("\n          ");
+        dom.appendChild(el6, el7);
         dom.appendChild(el5, el6);
         var el6 = dom.createTextNode("\n        ");
         dom.appendChild(el5, el6);
@@ -2324,19 +3018,21 @@ define("stimdb1/templates/navbar", ["exports"], function (exports) {
         var element0 = dom.childAt(fragment, [0, 1]);
         var element1 = dom.childAt(element0, [3]);
         var element2 = dom.childAt(element1, [1]);
-        var morphs = new Array(7);
+        var element3 = dom.childAt(element1, [3, 1, 3]);
+        var morphs = new Array(8);
         morphs[0] = dom.createMorphAt(dom.childAt(element0, [1]), 3, 3);
         morphs[1] = dom.createMorphAt(element2, 1, 1);
         morphs[2] = dom.createMorphAt(element2, 3, 3);
         morphs[3] = dom.createMorphAt(element2, 5, 5);
         morphs[4] = dom.createMorphAt(element2, 7, 7);
         morphs[5] = dom.createMorphAt(element2, 9, 9);
-        morphs[6] = dom.createMorphAt(dom.childAt(element1, [3, 1, 3]), 1, 1);
+        morphs[6] = dom.createMorphAt(element3, 1, 1);
+        morphs[7] = dom.createMorphAt(element3, 3, 3);
         return morphs;
       },
-      statements: [["block", "link-to", ["index"], ["class", "navbar-brand"], 0, null, ["loc", [null, [10, 6], [10, 76]]]], ["block", "link-to", ["index"], ["tagName", "li"], 1, null, ["loc", [null, [15, 8], [15, 72]]]], ["block", "link-to", ["about"], ["tagName", "li"], 2, null, ["loc", [null, [16, 8], [16, 73]]]], ["block", "link-to", ["stimsets"], ["tagName", "li"], 3, null, ["loc", [null, [17, 8], [17, 84]]]], ["block", "link-to", ["creators"], ["tagName", "li"], 4, null, ["loc", [null, [18, 8], [18, 77]]]], ["block", "link-to", ["contact"], ["tagName", "li"], 5, null, ["loc", [null, [19, 8], [19, 77]]]], ["block", "link-to", ["admin.messages"], ["tagName", "li"], 6, null, ["loc", [null, [28, 10], [28, 87]]]]],
+      statements: [["block", "link-to", ["index"], ["class", "navbar-brand"], 0, null, ["loc", [null, [10, 6], [10, 76]]]], ["block", "link-to", ["index"], ["tagName", "li"], 1, null, ["loc", [null, [15, 8], [15, 72]]]], ["block", "link-to", ["about"], ["tagName", "li"], 2, null, ["loc", [null, [16, 8], [16, 73]]]], ["block", "link-to", ["stimsets"], ["tagName", "li"], 3, null, ["loc", [null, [17, 8], [17, 84]]]], ["block", "link-to", ["creators.listall"], ["tagName", "li"], 4, null, ["loc", [null, [18, 8], [18, 85]]]], ["block", "link-to", ["contact"], ["tagName", "li"], 5, null, ["loc", [null, [19, 8], [19, 77]]]], ["block", "link-to", ["admin.messages"], ["tagName", "li"], 6, null, ["loc", [null, [28, 10], [28, 87]]]], ["block", "link-to", ["admin.seeder"], ["tagName", "li"], 7, null, ["loc", [null, [29, 10], [29, 92]]]]],
       locals: [],
-      templates: [child0, child1, child2, child3, child4, child5, child6]
+      templates: [child0, child1, child2, child3, child4, child5, child6, child7]
     };
   })());
 });
@@ -2698,7 +3394,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("stimdb1/app")["default"].create({"name":"stimdb1","version":"0.0.0+d9f3337a"});
+  require("stimdb1/app")["default"].create({"name":"stimdb1","version":"0.0.0+47139f33"});
 }
 
 /* jshint ignore:end */

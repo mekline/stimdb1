@@ -12,6 +12,7 @@ Router.map(function() {
 
   this.route('admin', function() {
     this.route('messages');
+    this.route('seeder');
   });
 
   this.route('creators', function() {

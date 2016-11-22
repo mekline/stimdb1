@@ -1,0 +1,25 @@
+<!-- app/templates/admin/seeder.hbs -->
+<h1>Database Seeder</h1>
+
+<p>This is a place to summarize the dataset so far. Right now it doesn't distinguish
+ counts of 'real' and fakedata entries that just exist to test database relations.</p>
+
+<div class="row">
+  <div class="col-md-4">{{number-box title="Creators" number=creators.length}}</div>
+  <div class="col-md-4">{{number-box title="Stimulus Sets" number=stimsets.length}}</div>
+  <div class="col-md-4">{{number-box title="Stimuli" number=stimuli.length}}</div>
+</div>
+
+{{seeder-block
+    sectionTitle='Creators'
+    generateAction='generateCreators'
+    deleteAction='deleteCreators'
+    createReady=creDone
+    deleteReady=creDelDone}}
+
+{{seeder-block
+    sectionTitle='Stimsets'
+    generateAction='generateStimSetsandStim'
+    deleteAction='deleteStimSetsandStim'
+    createReady=stimDone
+    deleteReady=stimDelDone}}

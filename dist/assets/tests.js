@@ -1050,6 +1050,15 @@ define('stimdb1/tests/models/creator.jshint', ['exports'], function (exports) {
     assert.ok(true, 'models/creator.js should pass jshint.');
   });
 });
+define('stimdb1/tests/models/custom-inflector-rules.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | models/custom-inflector-rules.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(false, 'models/custom-inflector-rules.js should pass jshint.\nmodels/custom-inflector-rules.js: line 1, col 8, \'DS\' is defined but never used.\n\n1 error');
+  });
+});
 define('stimdb1/tests/models/message.jshint', ['exports'], function (exports) {
   'use strict';
 
@@ -1119,7 +1128,7 @@ define('stimdb1/tests/routes/admin/seeder.jshint', ['exports'], function (export
   QUnit.module('JSHint | routes/admin/seeder.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(false, 'routes/admin/seeder.js should pass jshint.\nroutes/admin/seeder.js: line 12, col 7, Missing semicolon.\n\n1 error');
+    assert.ok(true, 'routes/admin/seeder.js should pass jshint.');
   });
 });
 define('stimdb1/tests/routes/contact.jshint', ['exports'], function (exports) {
@@ -1156,6 +1165,15 @@ define('stimdb1/tests/routes/creators/new.jshint', ['exports'], function (export
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'routes/creators/new.js should pass jshint.');
+  });
+});
+define('stimdb1/tests/routes/stimsets/listall.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | routes/stimsets/listall.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'routes/stimsets/listall.js should pass jshint.');
   });
 });
 define('stimdb1/tests/routes/stimsets/new.jshint', ['exports'], function (exports) {
@@ -1253,6 +1271,28 @@ define('stimdb1/tests/unit/models/creator-test.jshint', ['exports'], function (e
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'unit/models/creator-test.js should pass jshint.');
+  });
+});
+define('stimdb1/tests/unit/models/custom-inflector-rules-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
+
+  (0, _emberQunit.moduleForModel)('custom-inflector-rules', 'Unit | Model | custom inflector rules', {
+    // Specify the other units that are required for this test.
+    needs: []
+  });
+
+  (0, _emberQunit.test)('it exists', function (assert) {
+    var model = this.subject();
+    // let store = this.store();
+    assert.ok(!!model);
+  });
+});
+define('stimdb1/tests/unit/models/custom-inflector-rules-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | unit/models/custom-inflector-rules-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/models/custom-inflector-rules-test.js should pass jshint.');
   });
 });
 define('stimdb1/tests/unit/models/message-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
@@ -1403,6 +1443,27 @@ define('stimdb1/tests/unit/routes/contact-test.jshint', ['exports'], function (e
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'unit/routes/contact-test.js should pass jshint.');
+  });
+});
+define('stimdb1/tests/unit/routes/stimsets/listall-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
+
+  (0, _emberQunit.moduleFor)('route:stimsets/listall', 'Unit | Route | stimsets/listall', {
+    // Specify the other units that are required for this test.
+    // needs: ['controller:foo']
+  });
+
+  (0, _emberQunit.test)('it exists', function (assert) {
+    var route = this.subject();
+    assert.ok(route);
+  });
+});
+define('stimdb1/tests/unit/routes/stimsets/listall-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | unit/routes/stimsets/listall-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/routes/stimsets/listall-test.js should pass jshint.');
   });
 });
 define('stimdb1/tests/unit/routes/stimsets/new-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {

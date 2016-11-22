@@ -1,5 +1,10 @@
+
+import Ember from 'ember';
 import DS from 'ember-data'; 
 import Faker from 'faker';
+
+var inflector = Ember.Inflector.inflector;
+inflector.irregular('stimulus','stimuli');
 
 export default DS.Model.extend({
   stimname: DS.attr('string'),

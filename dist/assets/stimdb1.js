@@ -146,7 +146,7 @@ define('stimdb1/controllers/admin/seeder', ['exports', 'ember', 'faker'], functi
         this.set('creDelDone', true);
       },
 
-      generateStimSetsandStim: function generateStimSetsandStim(num) {
+      generateStimSetsandStims: function generateStimSetsandStims(num) {
         var counter = parseInt(num);
 
         for (var i = 0; i < counter; i++) {
@@ -156,7 +156,7 @@ define('stimdb1/controllers/admin/seeder', ['exports', 'ember', 'faker'], functi
         }
       },
 
-      deleteStimsSetsandStims: function deleteStimsSetsandStims() {
+      deleteStimSetsandStims: function deleteStimSetsandStims() {
         this._destroyAll(this.get('stimuli'));
         this._destroyAll(this.get('stimsets'));
 
@@ -482,6 +482,13 @@ define('stimdb1/models/creator', ['exports', 'ember-data', 'ember', 'faker'], fu
     }
   });
 });
+define('stimdb1/models/custom-inflector-rules', ['exports', 'ember-data', 'ember-inflector'], function (exports, _emberData, _emberInflector) {
+  var inflector = _emberInflector['default'].inflector;
+
+  inflector.irregular('stimulus', 'stimuli');
+
+  exports['default'] = {};
+});
 define('stimdb1/models/message', ['exports', 'ember-data'], function (exports, _emberData) {
   exports['default'] = _emberData['default'].Model.extend({
     email: _emberData['default'].attr('string'),
@@ -491,18 +498,18 @@ define('stimdb1/models/message', ['exports', 'ember-data'], function (exports, _
 define('stimdb1/models/stimset', ['exports', 'ember-data', 'faker'], function (exports, _emberData, _faker) {
   exports['default'] = _emberData['default'].Model.extend({
 
-    setname: _emberData['default'].attr('string'),
+    stimsetname: _emberData['default'].attr('string'),
     citation: _emberData['default'].attr('string'), //text version
     doi: _emberData['default'].attr('string'), //doi link
     setSource: _emberData['default'].attr('string'), //record whether this is a fake thing!
 
-    creator: _emberData['default'].belongsTo('creator'),
-    //stims: DS.hasMany('stimulus'),
+    creator: _emberData['default'].belongsTo('creator', { inverse: 'stimsets', async: false }),
+    stimuli: _emberData['default'].hasMany('stimulus'),
 
     randomize: function randomize(creator) {
       //specify who made this stim set
       var whichSet = _faker['default'].hacker.adjective() + ' ' + _faker['default'].hacker.adjective() + ' Stimuli';
-      this.set('setname', whichSet);
+      this.set('stimsetname', whichSet);
       this.set('citation', creator.name + ' et al.(' + _faker['default'].random.number(1975, 2015) + ') A paper about ' + whichSet);
       this.set('doi', 'http://DOI.' + _faker['default'].internet.ip());
       this.set('creator', creator);
@@ -513,7 +520,11 @@ define('stimdb1/models/stimset', ['exports', 'ember-data', 'faker'], function (e
 
   });
 });
-define('stimdb1/models/stimulus', ['exports', 'ember-data', 'faker'], function (exports, _emberData, _faker) {
+define('stimdb1/models/stimulus', ['exports', 'ember', 'ember-data', 'faker'], function (exports, _ember, _emberData, _faker) {
+
+  var inflector = _ember['default'].Inflector.inflector;
+  inflector.irregular('stimulus', 'stimuli');
+
   exports['default'] = _emberData['default'].Model.extend({
     stimname: _emberData['default'].attr('string'),
     mediaFilename: _emberData['default'].attr('string'),
@@ -652,10 +663,22 @@ define('stimdb1/routes/creators/edit', ['exports', 'ember'], function (exports, 
 });
 //app/routes/creators/edit.js
 define('stimdb1/routes/creators/listall', ['exports', 'ember'], function (exports, _ember) {
+  var inflector = _ember['default'].Inflector.inflector;
+  inflector.irregular('stimulus', 'stimuli');
+
   exports['default'] = _ember['default'].Route.extend({
 
     model: function model() {
-      return this.store.findAll('creator');
+
+      return _ember['default'].RSVP.hash({
+        creators: this.store.findAll('creator'),
+        stimsets: this.store.findAll('stimset')
+      });
+    },
+
+    setupController: function setupController(controller, model) {
+      controller.set('creators', model.creators);
+      controller.set('stimsets', model.stimsets);
     },
 
     actions: {
@@ -709,6 +732,28 @@ define('stimdb1/routes/creators/new', ['exports', 'ember'], function (exports, _
   });
 });
 // app/routes/libraries/new.js
+define('stimdb1/routes/stimsets/listall', ['exports', 'ember'], function (exports, _ember) {
+
+  var inflector = _ember['default'].Inflector.inflector;
+  inflector.irregular('stimulus', 'stimuli');
+
+  exports['default'] = _ember['default'].Route.extend({
+
+    model: function model() {
+
+      return _ember['default'].RSVP.hash({
+        creators: this.store.findAll('creator'),
+        stimsets: this.store.findAll('stimset')
+      });
+    },
+
+    setupController: function setupController(controller, model) {
+      controller.set('creators', model.creators);
+      controller.set('stimsets', model.stimsets);
+    }
+
+  });
+});
 define('stimdb1/routes/stimsets/new', ['exports', 'ember'], function (exports, _ember) {
   exports['default'] = _ember['default'].Route.extend({});
 });
@@ -1142,7 +1187,7 @@ define("stimdb1/templates/admin/seeder", ["exports"], function (exports) {
         morphs[4] = dom.createMorphAt(fragment, 10, 10, contextualElement);
         return morphs;
       },
-      statements: [["inline", "number-box", [], ["title", "Creators", "number", ["subexpr", "@mut", [["get", "creators.length", ["loc", [null, [8, 61], [8, 76]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [8, 24], [8, 78]]], 0, 0], ["inline", "number-box", [], ["title", "Stimulus Sets", "number", ["subexpr", "@mut", [["get", "stimsets.length", ["loc", [null, [9, 66], [9, 81]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [9, 24], [9, 83]]], 0, 0], ["inline", "number-box", [], ["title", "Stimuli", "number", ["subexpr", "@mut", [["get", "stimuli.length", ["loc", [null, [10, 60], [10, 74]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [10, 24], [10, 76]]], 0, 0], ["inline", "seeder-block", [], ["sectionTitle", "Creators", "generateAction", "generateCreators", "deleteAction", "deleteCreators", "createReady", ["subexpr", "@mut", [["get", "creDone", ["loc", [null, [17, 16], [17, 23]]], 0, 0, 0, 0]], [], [], 0, 0], "deleteReady", ["subexpr", "@mut", [["get", "creDelDone", ["loc", [null, [18, 16], [18, 26]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [13, 0], [18, 28]]], 0, 0], ["inline", "seeder-block", [], ["sectionTitle", "Stimsets", "generateAction", "generateStimSetsandStim", "deleteAction", "deleteStimSetsandStim", "createReady", ["subexpr", "@mut", [["get", "stimDone", ["loc", [null, [24, 16], [24, 24]]], 0, 0, 0, 0]], [], [], 0, 0], "deleteReady", ["subexpr", "@mut", [["get", "stimDelDone", ["loc", [null, [25, 16], [25, 27]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [20, 0], [25, 29]]], 0, 0]],
+      statements: [["inline", "number-box", [], ["title", "Creators", "number", ["subexpr", "@mut", [["get", "creators.length", ["loc", [null, [8, 61], [8, 76]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [8, 24], [8, 78]]], 0, 0], ["inline", "number-box", [], ["title", "Stimulus Sets", "number", ["subexpr", "@mut", [["get", "stimsets.length", ["loc", [null, [9, 66], [9, 81]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [9, 24], [9, 83]]], 0, 0], ["inline", "number-box", [], ["title", "Stimuli", "number", ["subexpr", "@mut", [["get", "stimuli.length", ["loc", [null, [10, 60], [10, 74]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [10, 24], [10, 76]]], 0, 0], ["inline", "seeder-block", [], ["sectionTitle", "Creators", "generateAction", "generateCreators", "deleteAction", "deleteCreators", "createReady", ["subexpr", "@mut", [["get", "creDone", ["loc", [null, [17, 16], [17, 23]]], 0, 0, 0, 0]], [], [], 0, 0], "deleteReady", ["subexpr", "@mut", [["get", "creDelDone", ["loc", [null, [18, 16], [18, 26]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [13, 0], [18, 28]]], 0, 0], ["inline", "seeder-block", [], ["sectionTitle", "Stimsets", "generateAction", "generateStimSetsandStims", "deleteAction", "deleteStimSetsandStims", "createReady", ["subexpr", "@mut", [["get", "stimDone", ["loc", [null, [24, 16], [24, 24]]], 0, 0, 0, 0]], [], [], 0, 0], "deleteReady", ["subexpr", "@mut", [["get", "stimDelDone", ["loc", [null, [25, 16], [25, 27]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [20, 0], [25, 29]]], 0, 0]],
       locals: [],
       templates: []
     };
@@ -1436,6 +1481,49 @@ define("stimdb1/templates/components/creator-item-form", ["exports"], function (
 });
 define("stimdb1/templates/components/creator-item", ["exports"], function (exports) {
   exports["default"] = Ember.HTMLBars.template((function () {
+    var child0 = (function () {
+      return {
+        meta: {
+          "revision": "Ember@2.8.2",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 13,
+              "column": 2
+            },
+            "end": {
+              "line": 15,
+              "column": 13
+            }
+          },
+          "moduleName": "stimdb1/templates/components/creator-item.hbs"
+        },
+        isEmpty: false,
+        arity: 1,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("               ");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("li");
+          var el2 = dom.createComment("");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 0, 0);
+          return morphs;
+        },
+        statements: [["content", "stimset.stimsetname", ["loc", [null, [14, 19], [14, 42]]], 0, 0, 0, 0]],
+        locals: ["stimset"],
+        templates: []
+      };
+    })();
     return {
       meta: {
         "revision": "Ember@2.8.2",
@@ -1446,7 +1534,7 @@ define("stimdb1/templates/components/creator-item", ["exports"], function (expor
             "column": 0
           },
           "end": {
-            "line": 19,
+            "line": 25,
             "column": 0
           }
         },
@@ -1504,6 +1592,22 @@ define("stimdb1/templates/components/creator-item", ["exports"], function (expor
         var el4 = dom.createComment("");
         dom.appendChild(el3, el4);
         dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n		");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("p");
+        var el4 = dom.createTextNode("Stimulus Sets:");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n		");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("ul");
+        var el4 = dom.createTextNode("\n");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("        ");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
         var el3 = dom.createTextNode("\n	");
         dom.appendChild(el2, el3);
         dom.appendChild(el1, el2);
@@ -1529,18 +1633,19 @@ define("stimdb1/templates/components/creator-item", ["exports"], function (expor
         var element0 = dom.childAt(fragment, [0]);
         var element1 = dom.childAt(element0, [3]);
         var element2 = dom.childAt(element1, [3, 1]);
-        var morphs = new Array(6);
+        var morphs = new Array(7);
         morphs[0] = dom.createMorphAt(dom.childAt(element0, [1, 1]), 0, 0);
         morphs[1] = dom.createMorphAt(dom.childAt(element1, [1]), 1, 1);
         morphs[2] = dom.createAttrMorph(element2, 'href');
         morphs[3] = dom.createMorphAt(element2, 0, 0);
         morphs[4] = dom.createMorphAt(dom.childAt(element1, [5]), 1, 1);
-        morphs[5] = dom.createMorphAt(dom.childAt(element0, [5]), 1, 1);
+        morphs[5] = dom.createMorphAt(dom.childAt(element1, [9]), 1, 1);
+        morphs[6] = dom.createMorphAt(dom.childAt(element0, [5]), 1, 1);
         return morphs;
       },
-      statements: [["content", "item.name", ["loc", [null, [4, 27], [4, 40]]], 0, 0, 0, 0], ["content", "item.emailaddress", ["loc", [null, [8, 20], [8, 41]]], 0, 0, 0, 0], ["attribute", "href", ["get", "item.website", ["loc", [null, [9, 24], [9, 36]]], 0, 0, 0, 0], 0, 0, 0, 0], ["content", "item.website", ["loc", [null, [9, 39], [9, 55]]], 0, 0, 0, 0], ["content", "item.creatorSource", ["loc", [null, [10, 13], [10, 35]]], 0, 0, 0, 0], ["content", "yield", ["loc", [null, [14, 2], [14, 11]]], 0, 0, 0, 0]],
+      statements: [["content", "item.name", ["loc", [null, [4, 27], [4, 40]]], 0, 0, 0, 0], ["content", "item.emailaddress", ["loc", [null, [8, 20], [8, 41]]], 0, 0, 0, 0], ["attribute", "href", ["get", "item.website", ["loc", [null, [9, 24], [9, 36]]], 0, 0, 0, 0], 0, 0, 0, 0], ["content", "item.website", ["loc", [null, [9, 39], [9, 55]]], 0, 0, 0, 0], ["content", "item.creatorSource", ["loc", [null, [10, 13], [10, 35]]], 0, 0, 0, 0], ["block", "each", [["get", "item.stimsets", ["loc", [null, [13, 10], [13, 23]]], 0, 0, 0, 0]], [], 0, null, ["loc", [null, [13, 2], [15, 22]]]], ["content", "yield", ["loc", [null, [20, 2], [20, 11]]], 0, 0, 0, 0]],
       locals: [],
-      templates: []
+      templates: [child0]
     };
   })());
 });
@@ -2466,7 +2571,7 @@ define("stimdb1/templates/creators/listall", ["exports"], function (exports) {
         morphs[0] = dom.createMorphAt(dom.childAt(fragment, [2]), 1, 1);
         return morphs;
       },
-      statements: [["block", "each", [["get", "model", ["loc", [null, [5, 10], [5, 15]]], 0, 0, 0, 0]], [], 0, null, ["loc", [null, [5, 2], [18, 9]]]]],
+      statements: [["block", "each", [["get", "creators", ["loc", [null, [5, 10], [5, 18]]], 0, 0, 0, 0]], [], 0, null, ["loc", [null, [5, 2], [18, 9]]]]],
       locals: [],
       templates: [child0]
     };
@@ -3237,6 +3342,123 @@ define("stimdb1/templates/stimsets", ["exports"], function (exports) {
 });
 define("stimdb1/templates/stimsets/listall", ["exports"], function (exports) {
   exports["default"] = Ember.HTMLBars.template((function () {
+    var child0 = (function () {
+      var child0 = (function () {
+        return {
+          meta: {
+            "revision": "Ember@2.8.2",
+            "loc": {
+              "source": null,
+              "start": {
+                "line": 18,
+                "column": 13
+              },
+              "end": {
+                "line": 20,
+                "column": 13
+              }
+            },
+            "moduleName": "stimdb1/templates/stimsets/listall.hbs"
+          },
+          isEmpty: false,
+          arity: 1,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode("               ");
+            dom.appendChild(el0, el1);
+            var el1 = dom.createElement("li");
+            var el2 = dom.createComment("");
+            dom.appendChild(el1, el2);
+            dom.appendChild(el0, el1);
+            var el1 = dom.createTextNode("\n");
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 0, 0);
+            return morphs;
+          },
+          statements: [["content", "stimulus.mediaFilename", ["loc", [null, [19, 19], [19, 45]]], 0, 0, 0, 0]],
+          locals: ["stimulus"],
+          templates: []
+        };
+      })();
+      return {
+        meta: {
+          "revision": "Ember@2.8.2",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 12,
+              "column": 5
+            },
+            "end": {
+              "line": 24,
+              "column": 5
+            }
+          },
+          "moduleName": "stimdb1/templates/stimsets/listall.hbs"
+        },
+        isEmpty: false,
+        arity: 1,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("       ");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("tr");
+          var el2 = dom.createTextNode("\n         ");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createElement("td");
+          var el3 = dom.createComment("");
+          dom.appendChild(el2, el3);
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("\n         ");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createElement("td");
+          var el3 = dom.createComment("");
+          dom.appendChild(el2, el3);
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("\n         ");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createElement("td");
+          var el3 = dom.createTextNode("\n           ");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createElement("ul");
+          var el4 = dom.createTextNode("\n");
+          dom.appendChild(el3, el4);
+          var el4 = dom.createComment("");
+          dom.appendChild(el3, el4);
+          var el4 = dom.createTextNode("           ");
+          dom.appendChild(el3, el4);
+          dom.appendChild(el2, el3);
+          var el3 = dom.createTextNode("\n         ");
+          dom.appendChild(el2, el3);
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("\n       ");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var element0 = dom.childAt(fragment, [1]);
+          var morphs = new Array(3);
+          morphs[0] = dom.createMorphAt(dom.childAt(element0, [1]), 0, 0);
+          morphs[1] = dom.createMorphAt(dom.childAt(element0, [3]), 0, 0);
+          morphs[2] = dom.createMorphAt(dom.childAt(element0, [5, 1]), 1, 1);
+          return morphs;
+        },
+        statements: [["content", "stimset.creator.name", ["loc", [null, [14, 13], [14, 37]]], 0, 0, 0, 0], ["content", "stimset.stimsetname", ["loc", [null, [15, 13], [15, 36]]], 0, 0, 0, 0], ["block", "each", [["get", "stimset.stimuli", ["loc", [null, [18, 21], [18, 36]]], 0, 0, 0, 0]], [], 0, null, ["loc", [null, [18, 13], [20, 22]]]]],
+        locals: ["stimset"],
+        templates: [child0]
+      };
+    })();
     return {
       meta: {
         "revision": "Ember@2.8.2",
@@ -3247,8 +3469,8 @@ define("stimdb1/templates/stimsets/listall", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 1,
-            "column": 24
+            "line": 26,
+            "column": 9
           }
         },
         "moduleName": "stimdb1/templates/stimsets/listall.hbs"
@@ -3260,17 +3482,66 @@ define("stimdb1/templates/stimsets/listall", ["exports"], function (exports) {
       buildFragment: function buildFragment(dom) {
         var el0 = dom.createDocumentFragment();
         var el1 = dom.createElement("p");
-        var el2 = dom.createTextNode("No stim sets yet!");
+        var el2 = dom.createTextNode("only fake ones!");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n\n ");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("table");
+        dom.setAttribute(el1, "class", "table table-bordered table-striped");
+        var el2 = dom.createTextNode("\n   ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("thead");
+        var el3 = dom.createTextNode("\n     ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("tr");
+        var el4 = dom.createTextNode("\n       ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("th");
+        var el5 = dom.createTextNode("Creator");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n       ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("th");
+        var el5 = dom.createTextNode("Stimulus set name");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n       ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("th");
+        var el5 = dom.createTextNode("Stimuli");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n     ");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n   ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n   ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("tbody");
+        var el3 = dom.createTextNode("\n");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("   ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n ");
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
         return el0;
       },
-      buildRenderNodes: function buildRenderNodes() {
-        return [];
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var morphs = new Array(1);
+        morphs[0] = dom.createMorphAt(dom.childAt(fragment, [2, 3]), 1, 1);
+        return morphs;
       },
-      statements: [],
+      statements: [["block", "each", [["get", "stimsets", ["loc", [null, [12, 13], [12, 21]]], 0, 0, 0, 0]], [], 0, null, ["loc", [null, [12, 5], [24, 14]]]]],
       locals: [],
-      templates: []
+      templates: [child0]
     };
   })());
 });
@@ -3393,7 +3664,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("stimdb1/app")["default"].create({"name":"stimdb1","version":"0.0.0+fd09169b"});
+  require("stimdb1/app")["default"].create({"name":"stimdb1","version":"0.0.0+3b977fce"});
 }
 
 /* jshint ignore:end */

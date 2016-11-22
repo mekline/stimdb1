@@ -28,7 +28,7 @@ export default Ember.Controller.extend({
       this.set('creDelDone', true);
     },
 
-    generateStimSetsandStim(num) {
+    generateStimSetsandStims(num) {
       const counter = parseInt(num);
 
       for (let i = 0; i < counter; i++) {
@@ -38,7 +38,7 @@ export default Ember.Controller.extend({
       }
     },
 
-    deleteStimsSetsandStims() {
+    deleteStimSetsandStims() {
       this._destroyAll(this.get('stimuli'));
       this._destroyAll(this.get('stimsets'));
 

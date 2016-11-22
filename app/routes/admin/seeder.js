@@ -9,7 +9,7 @@ export default Ember.Route.extend({
       creators: this.store.findAll('creator'),
       stimsets: this.store.findAll('stimset'),
       stimuli: this.store.findAll('stimulus')
-    })
+    });
   }, 
 
   setupController(controller, model) {

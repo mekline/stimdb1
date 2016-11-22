@@ -1,1 +1,26 @@
-<p>No stim sets yet!</p>
+<p>only fake ones!</p>
+
+ <table class="table table-bordered table-striped">
+   <thead>
+     <tr>
+       <th>Creator</th>
+       <th>Stimulus set name</th>
+       <th>Stimuli</th>
+     </tr>
+   </thead>
+   <tbody>
+     {{#each stimsets as |stimset|}}
+       <tr>
+         <td>{{stimset.creator.name}}</td>
+         <td>{{stimset.stimsetname}}</td>
+         <td>
+           <ul>
+             {{#each stimset.stimuli as |stimulus|}}
+               <li>{{stimulus.mediaFilename}}</li>
+             {{/each}}
+           </ul>
+         </td>
+       </tr>
+     {{/each}}
+   </tbody>
+ </table>

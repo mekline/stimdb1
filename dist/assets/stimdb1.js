@@ -755,9 +755,17 @@ define('stimdb1/routes/stimsets/listall', ['exports', 'ember'], function (export
   });
 });
 define('stimdb1/routes/stimsets/new', ['exports', 'ember'], function (exports, _ember) {
+
+  var inflector = _ember['default'].Inflector.inflector;
+  inflector.irregular('stimulus', 'stimuli');
+
   exports['default'] = _ember['default'].Route.extend({});
 });
 define('stimdb1/routes/stimsets/search', ['exports', 'ember'], function (exports, _ember) {
+
+  var inflector = _ember['default'].Inflector.inflector;
+  inflector.irregular('stimulus', 'stimuli');
+
   exports['default'] = _ember['default'].Route.extend({});
 });
 define('stimdb1/services/ajax', ['exports', 'ember-ajax/services/ajax'], function (exports, _emberAjaxServicesAjax) {
@@ -786,7 +794,7 @@ define("stimdb1/templates/about", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 37,
+            "line": 47,
             "column": 9
           }
         },
@@ -806,6 +814,44 @@ define("stimdb1/templates/about", ["exports"], function (exports) {
         dom.appendChild(el0, el1);
         var el1 = dom.createElement("p");
         var el2 = dom.createTextNode("This is going to be a searchable database of psychological stimuli. You contribute to it by making a public repository on OSF and including a component which contains individual [stim file, info file] pairs plus a master info file with information about the set. If you put them in the right format (and mark them with a special tag?) then this website should find/load them. ");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("div");
+        dom.setAttribute(el1, "class", "panel panel-default");
+        var el2 = dom.createTextNode("\n    ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "panel-body");
+        var el3 = dom.createTextNode("\n        ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("p");
+        var el4 = dom.createTextNode("TO DO ITEMS");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n        ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("ul");
+        var el4 = dom.createTextNode("\n               ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode(" Revise with current functionality");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n               ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode(" Link to pages that exist");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n        ");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n\n");
@@ -948,11 +994,11 @@ define("stimdb1/templates/admin/messages", ["exports"], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 14,
+              "line": 24,
               "column": 2
             },
             "end": {
-              "line": 20,
+              "line": 30,
               "column": 2
             }
           },
@@ -1002,7 +1048,7 @@ define("stimdb1/templates/admin/messages", ["exports"], function (exports) {
           morphs[2] = dom.createMorphAt(dom.childAt(element0, [5, 0]), 0, 0);
           return morphs;
         },
-        statements: [["content", "message.id", ["loc", [null, [16, 10], [16, 24]]], 0, 0, 0, 0], ["content", "message.email", ["loc", [null, [17, 10], [17, 27]]], 0, 0, 0, 0], ["content", "message.messagetxt", ["loc", [null, [18, 13], [18, 35]]], 0, 0, 0, 0]],
+        statements: [["content", "message.id", ["loc", [null, [26, 10], [26, 24]]], 0, 0, 0, 0], ["content", "message.email", ["loc", [null, [27, 10], [27, 27]]], 0, 0, 0, 0], ["content", "message.messagetxt", ["loc", [null, [28, 13], [28, 35]]], 0, 0, 0, 0]],
         locals: ["message"],
         templates: []
       };
@@ -1017,7 +1063,7 @@ define("stimdb1/templates/admin/messages", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 23,
+            "line": 33,
             "column": 0
           }
         },
@@ -1035,6 +1081,44 @@ define("stimdb1/templates/admin/messages", ["exports"], function (exports) {
         dom.appendChild(el0, el1);
         var el1 = dom.createElement("h1");
         var el2 = dom.createTextNode("Messages sent to stimdb1");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("div");
+        dom.setAttribute(el1, "class", "panel panel-default");
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "panel-body");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("p");
+        var el4 = dom.createTextNode("TO DO ITEMS");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n        ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("ul");
+        var el4 = dom.createTextNode("\n               ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode("Hide page from basic user");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n               ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode("Redirect to the contact page?");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n        ");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n\n");
@@ -1090,10 +1174,10 @@ define("stimdb1/templates/admin/messages", ["exports"], function (exports) {
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
         var morphs = new Array(1);
-        morphs[0] = dom.createMorphAt(dom.childAt(fragment, [4, 3]), 1, 1);
+        morphs[0] = dom.createMorphAt(dom.childAt(fragment, [6, 3]), 1, 1);
         return morphs;
       },
-      statements: [["block", "each", [["get", "model", ["loc", [null, [14, 10], [14, 15]]], 0, 0, 0, 0]], [], 0, null, ["loc", [null, [14, 2], [20, 11]]]]],
+      statements: [["block", "each", [["get", "model", ["loc", [null, [24, 10], [24, 15]]], 0, 0, 0, 0]], [], 0, null, ["loc", [null, [24, 2], [30, 11]]]]],
       locals: [],
       templates: [child0]
     };
@@ -1111,7 +1195,7 @@ define("stimdb1/templates/admin/seeder", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 26,
+            "line": 39,
             "column": 0
           }
         },
@@ -1135,6 +1219,56 @@ define("stimdb1/templates/admin/seeder", ["exports"], function (exports) {
         dom.appendChild(el0, el1);
         var el1 = dom.createElement("p");
         var el2 = dom.createTextNode("This is a place to summarize the dataset so far. Right now it doesn't distinguish\n counts of 'real' and fakedata entries that just exist to test database relations.");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("div");
+        dom.setAttribute(el1, "class", "panel panel-default");
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "panel-body");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("p");
+        var el4 = dom.createTextNode("TO DO ITEMS");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n        ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("ul");
+        var el4 = dom.createTextNode("\n               ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode("Add usage instructions");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n               ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode("Lock/add warning popups to the delete functionality");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n               ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode("Handle edge cases! (How?) E.g.: breaks if we try to initialize stimsets when\n               no creators are listed in the database");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n               ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode("Prettify seeder-block, esp button placement, fader box behavior");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n        ");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n\n");
@@ -1178,16 +1312,16 @@ define("stimdb1/templates/admin/seeder", ["exports"], function (exports) {
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var element0 = dom.childAt(fragment, [6]);
+        var element0 = dom.childAt(fragment, [8]);
         var morphs = new Array(5);
         morphs[0] = dom.createMorphAt(dom.childAt(element0, [1]), 0, 0);
         morphs[1] = dom.createMorphAt(dom.childAt(element0, [3]), 0, 0);
         morphs[2] = dom.createMorphAt(dom.childAt(element0, [5]), 0, 0);
-        morphs[3] = dom.createMorphAt(fragment, 8, 8, contextualElement);
-        morphs[4] = dom.createMorphAt(fragment, 10, 10, contextualElement);
+        morphs[3] = dom.createMorphAt(fragment, 10, 10, contextualElement);
+        morphs[4] = dom.createMorphAt(fragment, 12, 12, contextualElement);
         return morphs;
       },
-      statements: [["inline", "number-box", [], ["title", "Creators", "number", ["subexpr", "@mut", [["get", "creators.length", ["loc", [null, [8, 61], [8, 76]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [8, 24], [8, 78]]], 0, 0], ["inline", "number-box", [], ["title", "Stimulus Sets", "number", ["subexpr", "@mut", [["get", "stimsets.length", ["loc", [null, [9, 66], [9, 81]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [9, 24], [9, 83]]], 0, 0], ["inline", "number-box", [], ["title", "Stimuli", "number", ["subexpr", "@mut", [["get", "stimuli.length", ["loc", [null, [10, 60], [10, 74]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [10, 24], [10, 76]]], 0, 0], ["inline", "seeder-block", [], ["sectionTitle", "Creators", "generateAction", "generateCreators", "deleteAction", "deleteCreators", "createReady", ["subexpr", "@mut", [["get", "creDone", ["loc", [null, [17, 16], [17, 23]]], 0, 0, 0, 0]], [], [], 0, 0], "deleteReady", ["subexpr", "@mut", [["get", "creDelDone", ["loc", [null, [18, 16], [18, 26]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [13, 0], [18, 28]]], 0, 0], ["inline", "seeder-block", [], ["sectionTitle", "Stimsets", "generateAction", "generateStimSetsandStims", "deleteAction", "deleteStimSetsandStims", "createReady", ["subexpr", "@mut", [["get", "stimDone", ["loc", [null, [24, 16], [24, 24]]], 0, 0, 0, 0]], [], [], 0, 0], "deleteReady", ["subexpr", "@mut", [["get", "stimDelDone", ["loc", [null, [25, 16], [25, 27]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [20, 0], [25, 29]]], 0, 0]],
+      statements: [["inline", "number-box", [], ["title", "Creators", "number", ["subexpr", "@mut", [["get", "creators.length", ["loc", [null, [21, 61], [21, 76]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [21, 24], [21, 78]]], 0, 0], ["inline", "number-box", [], ["title", "Stimulus Sets", "number", ["subexpr", "@mut", [["get", "stimsets.length", ["loc", [null, [22, 66], [22, 81]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [22, 24], [22, 83]]], 0, 0], ["inline", "number-box", [], ["title", "Stimuli", "number", ["subexpr", "@mut", [["get", "stimuli.length", ["loc", [null, [23, 60], [23, 74]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [23, 24], [23, 76]]], 0, 0], ["inline", "seeder-block", [], ["sectionTitle", "Creators", "generateAction", "generateCreators", "deleteAction", "deleteCreators", "createReady", ["subexpr", "@mut", [["get", "creDone", ["loc", [null, [30, 16], [30, 23]]], 0, 0, 0, 0]], [], [], 0, 0], "deleteReady", ["subexpr", "@mut", [["get", "creDelDone", ["loc", [null, [31, 16], [31, 26]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [26, 0], [31, 28]]], 0, 0], ["inline", "seeder-block", [], ["sectionTitle", "Stimsets", "generateAction", "generateStimSetsandStims", "deleteAction", "deleteStimSetsandStims", "createReady", ["subexpr", "@mut", [["get", "stimDone", ["loc", [null, [37, 16], [37, 24]]], 0, 0, 0, 0]], [], [], 0, 0], "deleteReady", ["subexpr", "@mut", [["get", "stimDelDone", ["loc", [null, [38, 16], [38, 27]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [33, 0], [38, 29]]], 0, 0]],
       locals: [],
       templates: []
     };
@@ -2130,11 +2264,11 @@ define("stimdb1/templates/creators", ["exports"], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 9,
+              "line": 7,
               "column": 4
             },
             "end": {
-              "line": 9,
+              "line": 7,
               "column": 71
             }
           },
@@ -2168,11 +2302,11 @@ define("stimdb1/templates/creators", ["exports"], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 10,
+              "line": 8,
               "column": 4
             },
             "end": {
-              "line": 10,
+              "line": 8,
               "column": 66
             }
           },
@@ -2209,7 +2343,7 @@ define("stimdb1/templates/creators", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 14,
+            "line": 12,
             "column": 10
           }
         },
@@ -2227,12 +2361,6 @@ define("stimdb1/templates/creators", ["exports"], function (exports) {
         dom.appendChild(el0, el1);
         var el1 = dom.createElement("h1");
         var el2 = dom.createTextNode("People");
-        dom.appendChild(el1, el2);
-        dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n\n");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createElement("p");
-        var el2 = dom.createTextNode(" For now this will just be a list of stimulus-set creators we are putting in the mockup. ");
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n\n");
@@ -2264,15 +2392,15 @@ define("stimdb1/templates/creators", ["exports"], function (exports) {
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var element0 = dom.childAt(fragment, [6, 1]);
+        var element0 = dom.childAt(fragment, [4, 1]);
         var morphs = new Array(3);
         morphs[0] = dom.createMorphAt(element0, 1, 1);
         morphs[1] = dom.createMorphAt(element0, 3, 3);
-        morphs[2] = dom.createMorphAt(fragment, 8, 8, contextualElement);
+        morphs[2] = dom.createMorphAt(fragment, 6, 6, contextualElement);
         dom.insertBoundary(fragment, null);
         return morphs;
       },
-      statements: [["block", "link-to", ["creators.listall"], ["tagName", "li"], 0, null, ["loc", [null, [9, 4], [9, 83]]]], ["block", "link-to", ["creators.new"], ["tagName", "li"], 1, null, ["loc", [null, [10, 4], [10, 78]]]], ["content", "outlet", ["loc", [null, [14, 0], [14, 10]]], 0, 0, 0, 0]],
+      statements: [["block", "link-to", ["creators.listall"], ["tagName", "li"], 0, null, ["loc", [null, [7, 4], [7, 83]]]], ["block", "link-to", ["creators.new"], ["tagName", "li"], 1, null, ["loc", [null, [8, 4], [8, 78]]]], ["content", "outlet", ["loc", [null, [12, 0], [12, 10]]], 0, 0, 0, 0]],
       locals: [],
       templates: [child0, child1]
     };
@@ -2287,11 +2415,11 @@ define("stimdb1/templates/creators/form", ["exports"], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 11,
+              "line": 22,
               "column": 4
             },
             "end": {
-              "line": 13,
+              "line": 24,
               "column": 4
             }
           },
@@ -2329,7 +2457,7 @@ define("stimdb1/templates/creators/form", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 16,
+            "line": 27,
             "column": 6
           }
         },
@@ -2350,6 +2478,44 @@ define("stimdb1/templates/creators/form", ["exports"], function (exports) {
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("div");
+        dom.setAttribute(el1, "class", "panel panel-default");
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "panel-body");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("p");
+        var el4 = dom.createTextNode("TO DO ITEMS");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("ul");
+        var el4 = dom.createTextNode("\n               ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode("Things added/edited here should get Source = Manually entered");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n               ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode("Add webaddress validation: require http:// or clean the input to fix it");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n        ");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n\n\n");
         dom.appendChild(el0, el1);
         var el1 = dom.createElement("div");
         dom.setAttribute(el1, "class", "row");
@@ -2381,14 +2547,14 @@ define("stimdb1/templates/creators/form", ["exports"], function (exports) {
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var element0 = dom.childAt(fragment, [4]);
+        var element0 = dom.childAt(fragment, [6]);
         var morphs = new Array(3);
         morphs[0] = dom.createMorphAt(dom.childAt(fragment, [2]), 0, 0);
         morphs[1] = dom.createMorphAt(dom.childAt(element0, [1]), 1, 1);
         morphs[2] = dom.createMorphAt(dom.childAt(element0, [3]), 1, 1);
         return morphs;
       },
-      statements: [["content", "title", ["loc", [null, [2, 4], [2, 13]]], 0, 0, 0, 0], ["inline", "creator-item-form", [], ["item", ["subexpr", "@mut", [["get", "model", ["loc", [null, [7, 29], [7, 34]]], 0, 0, 0, 0]], [], [], 0, 0], "buttonLabel", ["subexpr", "@mut", [["get", "buttonLabel", ["loc", [null, [7, 47], [7, 58]]], 0, 0, 0, 0]], [], [], 0, 0], "action", "saveCreator"], ["loc", [null, [7, 4], [7, 81]]], 0, 0], ["block", "creator-item", [], ["item", ["subexpr", "@mut", [["get", "model", ["loc", [null, [11, 25], [11, 30]]], 0, 0, 0, 0]], [], [], 0, 0]], 0, null, ["loc", [null, [11, 4], [13, 21]]]]],
+      statements: [["content", "title", ["loc", [null, [2, 4], [2, 13]]], 0, 0, 0, 0], ["inline", "creator-item-form", [], ["item", ["subexpr", "@mut", [["get", "model", ["loc", [null, [18, 29], [18, 34]]], 0, 0, 0, 0]], [], [], 0, 0], "buttonLabel", ["subexpr", "@mut", [["get", "buttonLabel", ["loc", [null, [18, 47], [18, 58]]], 0, 0, 0, 0]], [], [], 0, 0], "action", "saveCreator"], ["loc", [null, [18, 4], [18, 81]]], 0, 0], ["block", "creator-item", [], ["item", ["subexpr", "@mut", [["get", "model", ["loc", [null, [22, 25], [22, 30]]], 0, 0, 0, 0]], [], [], 0, 0]], 0, null, ["loc", [null, [22, 4], [24, 21]]]]],
       locals: [],
       templates: [child0]
     };
@@ -2405,11 +2571,11 @@ define("stimdb1/templates/creators/listall", ["exports"], function (exports) {
               "loc": {
                 "source": null,
                 "start": {
-                  "line": 10,
+                  "line": 24,
                   "column": 8
                 },
                 "end": {
-                  "line": 10,
+                  "line": 24,
                   "column": 82
                 }
               },
@@ -2439,11 +2605,11 @@ define("stimdb1/templates/creators/listall", ["exports"], function (exports) {
             "loc": {
               "source": null,
               "start": {
-                "line": 8,
+                "line": 22,
                 "column": 6
               },
               "end": {
-                "line": 14,
+                "line": 28,
                 "column": 6
               }
             },
@@ -2477,7 +2643,7 @@ define("stimdb1/templates/creators/listall", ["exports"], function (exports) {
             morphs[1] = dom.createElementMorph(element0);
             return morphs;
           },
-          statements: [["block", "link-to", ["creators.edit", ["get", "creator.id", ["loc", [null, [10, 35], [10, 45]]], 0, 0, 0, 0]], ["class", "btn btn-success btn-xs"], 0, null, ["loc", [null, [10, 8], [10, 94]]]], ["element", "action", ["deleteCreator", ["get", "creator", ["loc", [null, [12, 71], [12, 78]]], 0, 0, 0, 0]], [], ["loc", [null, [12, 46], [12, 80]]], 0, 0]],
+          statements: [["block", "link-to", ["creators.edit", ["get", "creator.id", ["loc", [null, [24, 35], [24, 45]]], 0, 0, 0, 0]], ["class", "btn btn-success btn-xs"], 0, null, ["loc", [null, [24, 8], [24, 94]]]], ["element", "action", ["deleteCreator", ["get", "creator", ["loc", [null, [26, 71], [26, 78]]], 0, 0, 0, 0]], [], ["loc", [null, [26, 46], [26, 80]]], 0, 0]],
           locals: [],
           templates: [child0]
         };
@@ -2488,11 +2654,11 @@ define("stimdb1/templates/creators/listall", ["exports"], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 5,
+              "line": 19,
               "column": 2
             },
             "end": {
-              "line": 18,
+              "line": 32,
               "column": 0
             }
           },
@@ -2524,7 +2690,7 @@ define("stimdb1/templates/creators/listall", ["exports"], function (exports) {
           morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 1, 1);
           return morphs;
         },
-        statements: [["block", "creator-item", [], ["item", ["subexpr", "@mut", [["get", "creator", ["loc", [null, [8, 27], [8, 34]]], 0, 0, 0, 0]], [], [], 0, 0]], 0, null, ["loc", [null, [8, 6], [14, 23]]]]],
+        statements: [["block", "creator-item", [], ["item", ["subexpr", "@mut", [["get", "creator", ["loc", [null, [22, 27], [22, 34]]], 0, 0, 0, 0]], [], [], 0, 0]], 0, null, ["loc", [null, [22, 6], [28, 23]]]]],
         locals: ["creator"],
         templates: [child0]
       };
@@ -2539,7 +2705,7 @@ define("stimdb1/templates/creators/listall", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 21,
+            "line": 35,
             "column": 0
           }
         },
@@ -2553,7 +2719,63 @@ define("stimdb1/templates/creators/listall", ["exports"], function (exports) {
         var el0 = dom.createDocumentFragment();
         var el1 = dom.createComment(" app/templates/creators/listall.hbs ");
         dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n\n\n");
+        var el1 = dom.createTextNode("\n\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("div");
+        dom.setAttribute(el1, "class", "panel panel-default");
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "panel-body");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("p");
+        var el4 = dom.createTextNode("TO DO ITEMS");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("ul");
+        var el4 = dom.createTextNode("\n               ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode("Clarify that this is fake data");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n               ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode("Make the panels stack in a less ugly way!");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n               ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode("Clicking a panel should expand or link to a creator detail page");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n               ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode("Creator preview (here) includes: Name, picture, contact details, list of stimulus sets (maybe with little billboard pictures)");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n               ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode("Clicking on stimset should link to the stimset detail page");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n        ");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n\n\n\n");
         dom.appendChild(el0, el1);
         var el1 = dom.createElement("div");
         dom.setAttribute(el1, "class", "row");
@@ -2568,10 +2790,10 @@ define("stimdb1/templates/creators/listall", ["exports"], function (exports) {
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
         var morphs = new Array(1);
-        morphs[0] = dom.createMorphAt(dom.childAt(fragment, [2]), 1, 1);
+        morphs[0] = dom.createMorphAt(dom.childAt(fragment, [4]), 1, 1);
         return morphs;
       },
-      statements: [["block", "each", [["get", "creators", ["loc", [null, [5, 10], [5, 18]]], 0, 0, 0, 0]], [], 0, null, ["loc", [null, [5, 2], [18, 9]]]]],
+      statements: [["block", "each", [["get", "creators", ["loc", [null, [19, 10], [19, 18]]], 0, 0, 0, 0]], [], 0, null, ["loc", [null, [19, 2], [32, 9]]]]],
       locals: [],
       templates: [child0]
     };
@@ -2589,8 +2811,8 @@ define("stimdb1/templates/index", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 12,
-            "column": 5
+            "line": 13,
+            "column": 6
           }
         },
         "moduleName": "stimdb1/templates/index.hbs"
@@ -2605,37 +2827,45 @@ define("stimdb1/templates/index", ["exports"], function (exports) {
         var el2 = dom.createTextNode("Front page");
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n\nStimdb needs a real name. Miraculously there is a navbar now. \n\nTo implement:\n");
+        var el1 = dom.createTextNode("\n\n");
         dom.appendChild(el0, el1);
-        var el1 = dom.createElement("ul");
-        var el2 = dom.createTextNode("\n");
+        var el1 = dom.createElement("p");
+        var el2 = dom.createTextNode("Stimdb needs a real name. Miraculously there is a navbar now.");
         dom.appendChild(el1, el2);
-        var el2 = dom.createElement("li");
-        var el3 = dom.createTextNode("Login/admin access of some kind (??User authentification????)");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode(" \n\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("div");
+        dom.setAttribute(el1, "class", "panel panel-default");
+        var el2 = dom.createTextNode("\n	");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "panel-body");
+        var el3 = dom.createTextNode("\n		");
         dom.appendChild(el2, el3);
-        dom.appendChild(el1, el2);
-        var el2 = dom.createTextNode("\n");
-        dom.appendChild(el1, el2);
-        var el2 = dom.createElement("li");
-        var el3 = dom.createTextNode("Sample sets");
+        var el3 = dom.createElement("p");
+        var el4 = dom.createTextNode("TO DO ITEMS");
+        dom.appendChild(el3, el4);
         dom.appendChild(el2, el3);
-        dom.appendChild(el1, el2);
-        var el2 = dom.createTextNode("\n");
-        dom.appendChild(el1, el2);
-        var el2 = dom.createElement("li");
-        var el3 = dom.createTextNode("(Everything)");
+        var el3 = dom.createTextNode("\n		");
         dom.appendChild(el2, el3);
-        dom.appendChild(el1, el2);
-        var el2 = dom.createTextNode("\n");
-        dom.appendChild(el1, el2);
-        var el2 = dom.createElement("li");
-        var el3 = dom.createTextNode(" paragraph formatting in css");
+        var el3 = dom.createElement("ul");
+        var el4 = dom.createTextNode("\n               ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode("Login/admin access of some kind (User authentification)");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n               ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode(" paragraph formatting in app.scss");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n        ");
+        dom.appendChild(el3, el4);
         dom.appendChild(el2, el3);
-        dom.appendChild(el1, el2);
-        var el2 = dom.createTextNode("\n");
-        dom.appendChild(el1, el2);
-        var el2 = dom.createElement("li");
-        var el3 = dom.createTextNode(" Refactor the contact form into the contact model!");
+        var el3 = dom.createTextNode("\n	");
         dom.appendChild(el2, el3);
         dom.appendChild(el1, el2);
         var el2 = dom.createTextNode("\n");
@@ -2777,7 +3007,7 @@ define("stimdb1/templates/navbar", ["exports"], function (exports) {
             },
             "end": {
               "line": 17,
-              "column": 72
+              "column": 80
             }
           },
           "moduleName": "stimdb1/templates/navbar.hbs"
@@ -3134,7 +3364,7 @@ define("stimdb1/templates/navbar", ["exports"], function (exports) {
         morphs[7] = dom.createMorphAt(element3, 3, 3);
         return morphs;
       },
-      statements: [["block", "link-to", ["index"], ["class", "navbar-brand"], 0, null, ["loc", [null, [10, 6], [10, 76]]]], ["block", "link-to", ["index"], ["tagName", "li"], 1, null, ["loc", [null, [15, 8], [15, 72]]]], ["block", "link-to", ["about"], ["tagName", "li"], 2, null, ["loc", [null, [16, 8], [16, 73]]]], ["block", "link-to", ["stimsets"], ["tagName", "li"], 3, null, ["loc", [null, [17, 8], [17, 84]]]], ["block", "link-to", ["creators.listall"], ["tagName", "li"], 4, null, ["loc", [null, [18, 8], [18, 85]]]], ["block", "link-to", ["contact"], ["tagName", "li"], 5, null, ["loc", [null, [19, 8], [19, 77]]]], ["block", "link-to", ["admin.messages"], ["tagName", "li"], 6, null, ["loc", [null, [28, 10], [28, 87]]]], ["block", "link-to", ["admin.seeder"], ["tagName", "li"], 7, null, ["loc", [null, [29, 10], [29, 92]]]]],
+      statements: [["block", "link-to", ["index"], ["class", "navbar-brand"], 0, null, ["loc", [null, [10, 6], [10, 76]]]], ["block", "link-to", ["index"], ["tagName", "li"], 1, null, ["loc", [null, [15, 8], [15, 72]]]], ["block", "link-to", ["about"], ["tagName", "li"], 2, null, ["loc", [null, [16, 8], [16, 73]]]], ["block", "link-to", ["stimsets.listall"], ["tagName", "li"], 3, null, ["loc", [null, [17, 8], [17, 92]]]], ["block", "link-to", ["creators.listall"], ["tagName", "li"], 4, null, ["loc", [null, [18, 8], [18, 85]]]], ["block", "link-to", ["contact"], ["tagName", "li"], 5, null, ["loc", [null, [19, 8], [19, 77]]]], ["block", "link-to", ["admin.messages"], ["tagName", "li"], 6, null, ["loc", [null, [28, 10], [28, 87]]]], ["block", "link-to", ["admin.seeder"], ["tagName", "li"], 7, null, ["loc", [null, [29, 10], [29, 92]]]]],
       locals: [],
       templates: [child0, child1, child2, child3, child4, child5, child6, child7]
     };
@@ -3149,11 +3379,11 @@ define("stimdb1/templates/stimsets", ["exports"], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 10,
+              "line": 8,
               "column": 4
             },
             "end": {
-              "line": 10,
+              "line": 8,
               "column": 71
             }
           },
@@ -3187,11 +3417,11 @@ define("stimdb1/templates/stimsets", ["exports"], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 11,
+              "line": 9,
               "column": 4
             },
             "end": {
-              "line": 11,
+              "line": 9,
               "column": 68
             }
           },
@@ -3225,11 +3455,11 @@ define("stimdb1/templates/stimsets", ["exports"], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 12,
+              "line": 10,
               "column": 4
             },
             "end": {
-              "line": 12,
+              "line": 10,
               "column": 66
             }
           },
@@ -3266,7 +3496,7 @@ define("stimdb1/templates/stimsets", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 16,
+            "line": 14,
             "column": 10
           }
         },
@@ -3286,13 +3516,7 @@ define("stimdb1/templates/stimsets", ["exports"], function (exports) {
         var el2 = dom.createTextNode("Stimulus Sets");
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n\n");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createElement("p");
-        var el2 = dom.createTextNode(" Panels showing each stimulus set with basic details. These should show a 'snapshot'\n/ sample item to give people a flavor of what's there.");
-        dom.appendChild(el1, el2);
-        dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n\n");
+        var el1 = dom.createTextNode("\n\n\n");
         dom.appendChild(el0, el1);
         var el1 = dom.createElement("div");
         dom.setAttribute(el1, "class", "well");
@@ -3325,16 +3549,16 @@ define("stimdb1/templates/stimsets", ["exports"], function (exports) {
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var element0 = dom.childAt(fragment, [6, 1]);
+        var element0 = dom.childAt(fragment, [4, 1]);
         var morphs = new Array(4);
         morphs[0] = dom.createMorphAt(element0, 1, 1);
         morphs[1] = dom.createMorphAt(element0, 3, 3);
         morphs[2] = dom.createMorphAt(element0, 5, 5);
-        morphs[3] = dom.createMorphAt(fragment, 8, 8, contextualElement);
+        morphs[3] = dom.createMorphAt(fragment, 6, 6, contextualElement);
         dom.insertBoundary(fragment, null);
         return morphs;
       },
-      statements: [["block", "link-to", ["stimsets.listall"], ["tagName", "li"], 0, null, ["loc", [null, [10, 4], [10, 83]]]], ["block", "link-to", ["stimsets.search"], ["tagName", "li"], 1, null, ["loc", [null, [11, 4], [11, 80]]]], ["block", "link-to", ["stimsets.new"], ["tagName", "li"], 2, null, ["loc", [null, [12, 4], [12, 78]]]], ["content", "outlet", ["loc", [null, [16, 0], [16, 10]]], 0, 0, 0, 0]],
+      statements: [["block", "link-to", ["stimsets.listall"], ["tagName", "li"], 0, null, ["loc", [null, [8, 4], [8, 83]]]], ["block", "link-to", ["stimsets.search"], ["tagName", "li"], 1, null, ["loc", [null, [9, 4], [9, 80]]]], ["block", "link-to", ["stimsets.new"], ["tagName", "li"], 2, null, ["loc", [null, [10, 4], [10, 78]]]], ["content", "outlet", ["loc", [null, [14, 0], [14, 10]]], 0, 0, 0, 0]],
       locals: [],
       templates: [child0, child1, child2]
     };
@@ -3350,11 +3574,11 @@ define("stimdb1/templates/stimsets/listall", ["exports"], function (exports) {
             "loc": {
               "source": null,
               "start": {
-                "line": 18,
+                "line": 31,
                 "column": 13
               },
               "end": {
-                "line": 20,
+                "line": 33,
                 "column": 13
               }
             },
@@ -3381,7 +3605,7 @@ define("stimdb1/templates/stimsets/listall", ["exports"], function (exports) {
             morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 0, 0);
             return morphs;
           },
-          statements: [["content", "stimulus.mediaFilename", ["loc", [null, [19, 19], [19, 45]]], 0, 0, 0, 0]],
+          statements: [["content", "stimulus.mediaFilename", ["loc", [null, [32, 19], [32, 45]]], 0, 0, 0, 0]],
           locals: ["stimulus"],
           templates: []
         };
@@ -3392,11 +3616,11 @@ define("stimdb1/templates/stimsets/listall", ["exports"], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 12,
+              "line": 25,
               "column": 5
             },
             "end": {
-              "line": 24,
+              "line": 37,
               "column": 5
             }
           },
@@ -3454,7 +3678,7 @@ define("stimdb1/templates/stimsets/listall", ["exports"], function (exports) {
           morphs[2] = dom.createMorphAt(dom.childAt(element0, [5, 1]), 1, 1);
           return morphs;
         },
-        statements: [["content", "stimset.creator.name", ["loc", [null, [14, 13], [14, 37]]], 0, 0, 0, 0], ["content", "stimset.stimsetname", ["loc", [null, [15, 13], [15, 36]]], 0, 0, 0, 0], ["block", "each", [["get", "stimset.stimuli", ["loc", [null, [18, 21], [18, 36]]], 0, 0, 0, 0]], [], 0, null, ["loc", [null, [18, 13], [20, 22]]]]],
+        statements: [["content", "stimset.creator.name", ["loc", [null, [27, 13], [27, 37]]], 0, 0, 0, 0], ["content", "stimset.stimsetname", ["loc", [null, [28, 13], [28, 36]]], 0, 0, 0, 0], ["block", "each", [["get", "stimset.stimuli", ["loc", [null, [31, 21], [31, 36]]], 0, 0, 0, 0]], [], 0, null, ["loc", [null, [31, 13], [33, 22]]]]],
         locals: ["stimset"],
         templates: [child0]
       };
@@ -3469,7 +3693,7 @@ define("stimdb1/templates/stimsets/listall", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 26,
+            "line": 39,
             "column": 9
           }
         },
@@ -3483,6 +3707,62 @@ define("stimdb1/templates/stimsets/listall", ["exports"], function (exports) {
         var el0 = dom.createDocumentFragment();
         var el1 = dom.createElement("p");
         var el2 = dom.createTextNode("only fake ones!");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("div");
+        dom.setAttribute(el1, "class", "panel panel-default");
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "panel-body");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("p");
+        var el4 = dom.createTextNode("TO DO ITEMS");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("ul");
+        var el4 = dom.createTextNode("\n               ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode("Implement 'preview' panel view in place of list' (like creators)");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n               ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode("Preview includes: Name, creator/citation, 'billboard image' for stimset, text links to sample stimuli (e.g. dog.mp3, cat.mp3, bird.mp3...");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n               ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode("Clicking on creator should link to creator detail page");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n               ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode("Clicking on stimset should link to stimset detail page");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n               ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode("Clicking on stimulus link should link directly to stimulus-view page");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n        ");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n\n ");
@@ -3536,10 +3816,10 @@ define("stimdb1/templates/stimsets/listall", ["exports"], function (exports) {
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
         var morphs = new Array(1);
-        morphs[0] = dom.createMorphAt(dom.childAt(fragment, [2, 3]), 1, 1);
+        morphs[0] = dom.createMorphAt(dom.childAt(fragment, [4, 3]), 1, 1);
         return morphs;
       },
-      statements: [["block", "each", [["get", "stimsets", ["loc", [null, [12, 13], [12, 21]]], 0, 0, 0, 0]], [], 0, null, ["loc", [null, [12, 5], [24, 14]]]]],
+      statements: [["block", "each", [["get", "stimsets", ["loc", [null, [25, 13], [25, 21]]], 0, 0, 0, 0]], [], 0, null, ["loc", [null, [25, 5], [37, 14]]]]],
       locals: [],
       templates: [child0]
     };
@@ -3557,8 +3837,8 @@ define("stimdb1/templates/stimsets/new", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 1,
-            "column": 54
+            "line": 12,
+            "column": 6
           }
         },
         "moduleName": "stimdb1/templates/stimsets/new.hbs"
@@ -3569,8 +3849,58 @@ define("stimdb1/templates/stimsets/new", ["exports"], function (exports) {
       hasRendered: false,
       buildFragment: function buildFragment(dom) {
         var el0 = dom.createDocumentFragment();
-        var el1 = dom.createElement("p");
-        var el2 = dom.createTextNode("No mechanism for adding new stimsets right now ");
+        var el1 = dom.createElement("div");
+        dom.setAttribute(el1, "class", "panel panel-default");
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "panel-body");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("p");
+        var el4 = dom.createTextNode("TO DO ITEMS");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("ul");
+        var el4 = dom.createTextNode("\n               ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode("Implement a form to make a new stimset");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n               ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode("Requires you to select creator from a dropdown; include link back to new-creator page if it isn't there yet");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n               ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode("With a checkbox to indicate whether to make some fake stimulus items!");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n               ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode("should parallel creators/form page");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n               ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode("Anything entered here should get Source = Manually entered");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n        ");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
         return el0;
@@ -3596,7 +3926,7 @@ define("stimdb1/templates/stimsets/search", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 2,
+            "line": 12,
             "column": 0
           }
         },
@@ -3608,8 +3938,52 @@ define("stimdb1/templates/stimsets/search", ["exports"], function (exports) {
       hasRendered: false,
       buildFragment: function buildFragment(dom) {
         var el0 = dom.createDocumentFragment();
-        var el1 = dom.createElement("p");
-        var el2 = dom.createTextNode(" Magic search will go here! ");
+        var el1 = dom.createElement("div");
+        dom.setAttribute(el1, "class", "panel panel-default");
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "panel-body");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("p");
+        var el4 = dom.createTextNode("TO DO ITEMS");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("ul");
+        var el4 = dom.createTextNode("\n               ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode("Implement simple search!");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n               ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode("Eventually, should be able to have multiple filters to e.g. animated stimuli, event stimuli. This is a subset of all properties!!");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n               ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode("For now, this should just match stimuli that have the searched word in...filename, what else?");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n               ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode("To think about: search should pull up both stim sets and individual stimuli");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n        ");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n");
@@ -3664,7 +4038,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("stimdb1/app")["default"].create({"name":"stimdb1","version":"0.0.0+3b977fce"});
+  require("stimdb1/app")["default"].create({"name":"stimdb1","version":"0.0.0+4f4a4cb8"});
 }
 
 /* jshint ignore:end */

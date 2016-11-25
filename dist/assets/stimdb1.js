@@ -119,6 +119,9 @@ define('stimdb1/components/smart-link-to', ['exports', 'ember-cli-smart-link-to/
     }
   });
 });
+define('stimdb1/components/stimset-item', ['exports', 'ember'], function (exports, _ember) {
+  exports['default'] = _ember['default'].Component.extend({});
+});
 define('stimdb1/controllers/admin/seeder', ['exports', 'ember', 'faker'], function (exports, _ember, _faker) {
   exports['default'] = _ember['default'].Controller.extend({
 
@@ -503,16 +506,27 @@ define('stimdb1/models/stimset', ['exports', 'ember-data', 'faker'], function (e
     doi: _emberData['default'].attr('string'), //doi link
     setSource: _emberData['default'].attr('string'), //record whether this is a fake thing!
 
-    creator: _emberData['default'].belongsTo('creator', { inverse: 'stimsets', async: false }),
+    creator: _emberData['default'].belongsTo('creator'),
     stimuli: _emberData['default'].hasMany('stimulus'),
 
     randomize: function randomize(creator) {
       //specify who made this stim set
       var whichSet = _faker['default'].hacker.adjective() + ' ' + _faker['default'].hacker.adjective() + ' Stimuli';
-      this.set('stimsetname', whichSet);
-      this.set('citation', creator.name + ' et al.(' + _faker['default'].random.number(1975, 2015) + ') A paper about ' + whichSet);
-      this.set('doi', 'http://DOI.' + _faker['default'].internet.ip());
       this.set('creator', creator);
+      //make sure the stimset gets saved back to creator, doesn't happen automatically
+      var myCreator = this.get('creator');
+      if (myCreator && myCreator.then) {
+        myCreator.then(function (myCreator) {
+          myCreator.save();
+        });
+      } else if (myCreator) {
+        myCreator.save();
+      }
+
+      this.set('stimsetname', whichSet);
+      this.set('citation', myCreator.get('name') + ' et al.(' + _faker['default'].random.number(1975, 2015) + ') A paper about ' + whichSet);
+      this.set('doi', 'http://DOI.' + _faker['default'].internet.ip());
+
       this.set('setSource', 'faker generated');
 
       return this; //not sure why needed yet
@@ -539,6 +553,8 @@ define('stimdb1/models/stimulus', ['exports', 'ember', 'ember-data', 'faker'], f
       this.set('mediaFilename', whichStim + '.' + _faker['default'].system.commonFileExt());
       this.set('stimset', stimset);
       this.set('stimSource', 'faker generated');
+
+      //save back to the stimset
 
       return this; //not sure why needed yet
     }
@@ -568,12 +584,13 @@ define('stimdb1/router', ['exports', 'ember', 'stimdb1/config/environment'], fun
       this.route('new');
       this.route('listall');
       this.route('edit', { path: '/:creator_id/edit' });
+      this.route('detail', { path: '/:creator_id/detail' });
     });
 
     this.route('stimsets', function () {
       this.route('new');
       this.route('listall');
-      this.route('search');
+      this.route('detail', { path: '/:stimset_id/detail' });
     });
   });
 
@@ -615,6 +632,17 @@ define('stimdb1/routes/admin/seeder', ['exports', 'ember'], function (exports, _
 });
 define('stimdb1/routes/contact', ['exports', 'ember'], function (exports, _ember) {
 	exports['default'] = _ember['default'].Route.extend({});
+});
+define('stimdb1/routes/creators/detail', ['exports', 'ember'], function (exports, _ember) {
+  var inflector = _ember['default'].Inflector.inflector;
+  inflector.irregular('stimulus', 'stimuli');
+
+  exports['default'] = _ember['default'].Route.extend({
+    model: function model(params) {
+      return this.store.findRecord('creator', params.creator_id);
+    }
+
+  });
 });
 define('stimdb1/routes/creators/edit', ['exports', 'ember'], function (exports, _ember) {
   exports['default'] = _ember['default'].Route.extend({
@@ -732,6 +760,25 @@ define('stimdb1/routes/creators/new', ['exports', 'ember'], function (exports, _
   });
 });
 // app/routes/libraries/new.js
+define('stimdb1/routes/stimsets/detail', ['exports', 'ember'], function (exports, _ember) {
+  var inflector = _ember['default'].Inflector.inflector;
+  inflector.irregular('stimulus', 'stimuli');
+
+  exports['default'] = _ember['default'].Route.extend({
+
+    model: function model(params) {
+
+      return _ember['default'].RSVP.hash({
+        stimset: this.store.findRecord('stimset', params.stimset_id)
+      });
+    },
+
+    setupController: function setupController(controller, model) {
+      controller.set('stimset', model.stimset);
+    }
+
+  });
+});
 define('stimdb1/routes/stimsets/listall', ['exports', 'ember'], function (exports, _ember) {
 
   var inflector = _ember['default'].Inflector.inflector;
@@ -755,13 +802,6 @@ define('stimdb1/routes/stimsets/listall', ['exports', 'ember'], function (export
   });
 });
 define('stimdb1/routes/stimsets/new', ['exports', 'ember'], function (exports, _ember) {
-
-  var inflector = _ember['default'].Inflector.inflector;
-  inflector.irregular('stimulus', 'stimuli');
-
-  exports['default'] = _ember['default'].Route.extend({});
-});
-define('stimdb1/routes/stimsets/search', ['exports', 'ember'], function (exports, _ember) {
 
   var inflector = _ember['default'].Inflector.inflector;
   inflector.irregular('stimulus', 'stimuli');
@@ -1253,7 +1293,7 @@ define("stimdb1/templates/admin/seeder", ["exports"], function (exports) {
         var el4 = dom.createTextNode("\n               ");
         dom.appendChild(el3, el4);
         var el4 = dom.createElement("li");
-        var el5 = dom.createTextNode("Handle edge cases! (How?) E.g.: breaks if we try to initialize stimsets when\n               no creators are listed in the database");
+        var el5 = dom.createTextNode("Handle edge cases! (How?) E.g.: breaks if we try to initialize stimsets when\n               no creators are listed in the database; delete fails to delete stimsets (maybe if things are deleted in the wrong order? confusing)");
         dom.appendChild(el4, el5);
         dom.appendChild(el3, el4);
         var el4 = dom.createTextNode("\n               ");
@@ -1622,11 +1662,89 @@ define("stimdb1/templates/components/creator-item", ["exports"], function (expor
           "loc": {
             "source": null,
             "start": {
-              "line": 13,
+              "line": 4,
+              "column": 27
+            },
+            "end": {
+              "line": 4,
+              "column": 84
+            }
+          },
+          "moduleName": "stimdb1/templates/components/creator-item.hbs"
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createComment("");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+          dom.insertBoundary(fragment, 0);
+          dom.insertBoundary(fragment, null);
+          return morphs;
+        },
+        statements: [["content", "creator.name", ["loc", [null, [4, 68], [4, 84]]], 0, 0, 0, 0]],
+        locals: [],
+        templates: []
+      };
+    })();
+    var child1 = (function () {
+      var child0 = (function () {
+        return {
+          meta: {
+            "revision": "Ember@2.8.2",
+            "loc": {
+              "source": null,
+              "start": {
+                "line": 11,
+                "column": 19
+              },
+              "end": {
+                "line": 11,
+                "column": 83
+              }
+            },
+            "moduleName": "stimdb1/templates/components/creator-item.hbs"
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createComment("");
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+            dom.insertBoundary(fragment, 0);
+            dom.insertBoundary(fragment, null);
+            return morphs;
+          },
+          statements: [["content", "stimset.stimsetname", ["loc", [null, [11, 60], [11, 83]]], 0, 0, 0, 0]],
+          locals: [],
+          templates: []
+        };
+      })();
+      return {
+        meta: {
+          "revision": "Ember@2.8.2",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 10,
               "column": 2
             },
             "end": {
-              "line": 15,
+              "line": 12,
               "column": 13
             }
           },
@@ -1653,9 +1771,9 @@ define("stimdb1/templates/components/creator-item", ["exports"], function (expor
           morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 0, 0);
           return morphs;
         },
-        statements: [["content", "stimset.stimsetname", ["loc", [null, [14, 19], [14, 42]]], 0, 0, 0, 0]],
+        statements: [["block", "link-to", ["stimsets.detail", ["get", "stimset.id", ["loc", [null, [11, 48], [11, 58]]], 0, 0, 0, 0]], [], 0, null, ["loc", [null, [11, 19], [11, 95]]]]],
         locals: ["stimset"],
-        templates: []
+        templates: [child0]
       };
     })();
     return {
@@ -1668,7 +1786,7 @@ define("stimdb1/templates/components/creator-item", ["exports"], function (expor
             "column": 0
           },
           "end": {
-            "line": 25,
+            "line": 22,
             "column": 0
           }
         },
@@ -1703,33 +1821,7 @@ define("stimdb1/templates/components/creator-item", ["exports"], function (expor
         var el3 = dom.createTextNode("\n		");
         dom.appendChild(el2, el3);
         var el3 = dom.createElement("p");
-        var el4 = dom.createTextNode("Email Address: ");
-        dom.appendChild(el3, el4);
         var el4 = dom.createComment("");
-        dom.appendChild(el3, el4);
-        dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("\n		");
-        dom.appendChild(el2, el3);
-        var el3 = dom.createElement("p");
-        var el4 = dom.createTextNode("Website: ");
-        dom.appendChild(el3, el4);
-        var el4 = dom.createElement("a");
-        var el5 = dom.createComment("");
-        dom.appendChild(el4, el5);
-        dom.appendChild(el3, el4);
-        dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("\n		");
-        dom.appendChild(el2, el3);
-        var el3 = dom.createElement("p");
-        var el4 = dom.createTextNode("Source: ");
-        dom.appendChild(el3, el4);
-        var el4 = dom.createComment("");
-        dom.appendChild(el3, el4);
-        dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("\n		");
-        dom.appendChild(el2, el3);
-        var el3 = dom.createElement("p");
-        var el4 = dom.createTextNode("Stimulus Sets:");
         dom.appendChild(el3, el4);
         dom.appendChild(el2, el3);
         var el3 = dom.createTextNode("\n		");
@@ -1766,20 +1858,16 @@ define("stimdb1/templates/components/creator-item", ["exports"], function (expor
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
         var element0 = dom.childAt(fragment, [0]);
         var element1 = dom.childAt(element0, [3]);
-        var element2 = dom.childAt(element1, [3, 1]);
-        var morphs = new Array(7);
+        var morphs = new Array(4);
         morphs[0] = dom.createMorphAt(dom.childAt(element0, [1, 1]), 0, 0);
-        morphs[1] = dom.createMorphAt(dom.childAt(element1, [1]), 1, 1);
-        morphs[2] = dom.createAttrMorph(element2, 'href');
-        morphs[3] = dom.createMorphAt(element2, 0, 0);
-        morphs[4] = dom.createMorphAt(dom.childAt(element1, [5]), 1, 1);
-        morphs[5] = dom.createMorphAt(dom.childAt(element1, [9]), 1, 1);
-        morphs[6] = dom.createMorphAt(dom.childAt(element0, [5]), 1, 1);
+        morphs[1] = dom.createMorphAt(dom.childAt(element1, [1]), 0, 0);
+        morphs[2] = dom.createMorphAt(dom.childAt(element1, [3]), 1, 1);
+        morphs[3] = dom.createMorphAt(dom.childAt(element0, [5]), 1, 1);
         return morphs;
       },
-      statements: [["content", "item.name", ["loc", [null, [4, 27], [4, 40]]], 0, 0, 0, 0], ["content", "item.emailaddress", ["loc", [null, [8, 20], [8, 41]]], 0, 0, 0, 0], ["attribute", "href", ["get", "item.website", ["loc", [null, [9, 24], [9, 36]]], 0, 0, 0, 0], 0, 0, 0, 0], ["content", "item.website", ["loc", [null, [9, 39], [9, 55]]], 0, 0, 0, 0], ["content", "item.creatorSource", ["loc", [null, [10, 13], [10, 35]]], 0, 0, 0, 0], ["block", "each", [["get", "item.stimsets", ["loc", [null, [13, 10], [13, 23]]], 0, 0, 0, 0]], [], 0, null, ["loc", [null, [13, 2], [15, 22]]]], ["content", "yield", ["loc", [null, [20, 2], [20, 11]]], 0, 0, 0, 0]],
+      statements: [["block", "link-to", ["creators.detail", ["get", "creator.id", ["loc", [null, [4, 56], [4, 66]]], 0, 0, 0, 0]], [], 0, null, ["loc", [null, [4, 27], [4, 96]]]], ["content", "creator.emailaddress", ["loc", [null, [8, 5], [8, 29]]], 0, 0, 0, 0], ["block", "each", [["get", "creator.stimsets", ["loc", [null, [10, 10], [10, 26]]], 0, 0, 0, 0]], [], 1, null, ["loc", [null, [10, 2], [12, 22]]]], ["content", "yield", ["loc", [null, [17, 2], [17, 11]]], 0, 0, 0, 0]],
       locals: [],
-      templates: [child0]
+      templates: [child0, child1]
     };
   })());
 });
@@ -2077,6 +2165,224 @@ define("stimdb1/templates/components/seeder-block", ["exports"], function (expor
     };
   })());
 });
+define("stimdb1/templates/components/stimset-item", ["exports"], function (exports) {
+  exports["default"] = Ember.HTMLBars.template((function () {
+    var child0 = (function () {
+      return {
+        meta: {
+          "revision": "Ember@2.8.2",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 4,
+              "column": 27
+            },
+            "end": {
+              "line": 4,
+              "column": 91
+            }
+          },
+          "moduleName": "stimdb1/templates/components/stimset-item.hbs"
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createComment("");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+          dom.insertBoundary(fragment, 0);
+          dom.insertBoundary(fragment, null);
+          return morphs;
+        },
+        statements: [["content", "stimset.stimsetname", ["loc", [null, [4, 68], [4, 91]]], 0, 0, 0, 0]],
+        locals: [],
+        templates: []
+      };
+    })();
+    var child1 = (function () {
+      return {
+        meta: {
+          "revision": "Ember@2.8.2",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 8,
+              "column": 5
+            },
+            "end": {
+              "line": 8,
+              "column": 78
+            }
+          },
+          "moduleName": "stimdb1/templates/components/stimset-item.hbs"
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createComment("");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+          dom.insertBoundary(fragment, 0);
+          dom.insertBoundary(fragment, null);
+          return morphs;
+        },
+        statements: [["content", "stimset.creator.name", ["loc", [null, [8, 54], [8, 78]]], 0, 0, 0, 0]],
+        locals: [],
+        templates: []
+      };
+    })();
+    var child2 = (function () {
+      return {
+        meta: {
+          "revision": "Ember@2.8.2",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 11,
+              "column": 13
+            },
+            "end": {
+              "line": 13,
+              "column": 13
+            }
+          },
+          "moduleName": "stimdb1/templates/components/stimset-item.hbs"
+        },
+        isEmpty: false,
+        arity: 1,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("               ");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("li");
+          var el2 = dom.createComment("");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 0, 0);
+          return morphs;
+        },
+        statements: [["content", "stimulus.mediaFilename", ["loc", [null, [12, 19], [12, 45]]], 0, 0, 0, 0]],
+        locals: ["stimulus"],
+        templates: []
+      };
+    })();
+    return {
+      meta: {
+        "revision": "Ember@2.8.2",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 19,
+            "column": 6
+          }
+        },
+        "moduleName": "stimdb1/templates/components/stimset-item.hbs"
+      },
+      isEmpty: false,
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createElement("div");
+        dom.setAttribute(el1, "class", "panel panel-default");
+        var el2 = dom.createTextNode("\n\n	");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "panel-heading");
+        var el3 = dom.createTextNode("\n	  ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("h3");
+        dom.setAttribute(el3, "class", "panel-title");
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n	");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n\n	");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "panel-body");
+        var el3 = dom.createTextNode("\n		");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("p");
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n		");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("p");
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n		");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("ul");
+        var el4 = dom.createTextNode("\n");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("         ");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n	");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n	");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "panel-footer text-right");
+        var el3 = dom.createTextNode("\n	");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n\n");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var element0 = dom.childAt(fragment, [0]);
+        var element1 = dom.childAt(element0, [3]);
+        var morphs = new Array(4);
+        morphs[0] = dom.createMorphAt(dom.childAt(element0, [1, 1]), 0, 0);
+        morphs[1] = dom.createMorphAt(dom.childAt(element1, [1]), 0, 0);
+        morphs[2] = dom.createMorphAt(dom.childAt(element1, [3]), 0, 0);
+        morphs[3] = dom.createMorphAt(dom.childAt(element1, [5]), 1, 1);
+        return morphs;
+      },
+      statements: [["block", "link-to", ["stimsets.detail", ["get", "stimset.id", ["loc", [null, [4, 56], [4, 66]]], 0, 0, 0, 0]], [], 0, null, ["loc", [null, [4, 27], [4, 103]]]], ["block", "link-to", ["creators.detail", ["get", "stimset.creator.id", ["loc", [null, [8, 34], [8, 52]]], 0, 0, 0, 0]], [], 1, null, ["loc", [null, [8, 5], [8, 90]]]], ["content", "stimset.doi", ["loc", [null, [9, 5], [9, 20]]], 0, 0, 0, 0], ["block", "each", [["get", "stimset.stimuli", ["loc", [null, [11, 21], [11, 36]]], 0, 0, 0, 0]], [], 2, null, ["loc", [null, [11, 13], [13, 22]]]]],
+      locals: [],
+      templates: [child0, child1, child2]
+    };
+  })());
+});
 define("stimdb1/templates/contact", ["exports"], function (exports) {
   exports["default"] = Ember.HTMLBars.template((function () {
     var child0 = (function () {
@@ -2264,11 +2570,11 @@ define("stimdb1/templates/creators", ["exports"], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 7,
+              "line": 9,
               "column": 4
             },
             "end": {
-              "line": 7,
+              "line": 9,
               "column": 71
             }
           },
@@ -2302,11 +2608,11 @@ define("stimdb1/templates/creators", ["exports"], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 8,
+              "line": 10,
               "column": 4
             },
             "end": {
-              "line": 8,
+              "line": 10,
               "column": 66
             }
           },
@@ -2343,8 +2649,8 @@ define("stimdb1/templates/creators", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 12,
-            "column": 10
+            "line": 14,
+            "column": 0
           }
         },
         "moduleName": "stimdb1/templates/creators.hbs"
@@ -2362,6 +2668,10 @@ define("stimdb1/templates/creators", ["exports"], function (exports) {
         var el1 = dom.createElement("h1");
         var el2 = dom.createTextNode("People");
         dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createComment("");
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n\n");
         dom.appendChild(el0, el1);
@@ -2387,22 +2697,214 @@ define("stimdb1/templates/creators", ["exports"], function (exports) {
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n\n");
         dom.appendChild(el0, el1);
-        var el1 = dom.createComment("");
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var element0 = dom.childAt(fragment, [6, 1]);
+        var morphs = new Array(3);
+        morphs[0] = dom.createMorphAt(fragment, 4, 4, contextualElement);
+        morphs[1] = dom.createMorphAt(element0, 1, 1);
+        morphs[2] = dom.createMorphAt(element0, 3, 3);
+        return morphs;
+      },
+      statements: [["content", "outlet", ["loc", [null, [5, 0], [5, 10]]], 0, 0, 0, 0], ["block", "link-to", ["creators.listall"], ["tagName", "li"], 0, null, ["loc", [null, [9, 4], [9, 83]]]], ["block", "link-to", ["creators.new"], ["tagName", "li"], 1, null, ["loc", [null, [10, 4], [10, 78]]]]],
+      locals: [],
+      templates: [child0, child1]
+    };
+  })());
+});
+define("stimdb1/templates/creators/detail", ["exports"], function (exports) {
+  exports["default"] = Ember.HTMLBars.template((function () {
+    var child0 = (function () {
+      var child0 = (function () {
+        return {
+          meta: {
+            "revision": "Ember@2.8.2",
+            "loc": {
+              "source": null,
+              "start": {
+                "line": 14,
+                "column": 19
+              },
+              "end": {
+                "line": 14,
+                "column": 83
+              }
+            },
+            "moduleName": "stimdb1/templates/creators/detail.hbs"
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createComment("");
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+            dom.insertBoundary(fragment, 0);
+            dom.insertBoundary(fragment, null);
+            return morphs;
+          },
+          statements: [["content", "stimset.stimsetname", ["loc", [null, [14, 60], [14, 83]]], 0, 0, 0, 0]],
+          locals: [],
+          templates: []
+        };
+      })();
+      return {
+        meta: {
+          "revision": "Ember@2.8.2",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 13,
+              "column": 2
+            },
+            "end": {
+              "line": 15,
+              "column": 13
+            }
+          },
+          "moduleName": "stimdb1/templates/creators/detail.hbs"
+        },
+        isEmpty: false,
+        arity: 1,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("               ");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("li");
+          var el2 = dom.createComment("");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 0, 0);
+          return morphs;
+        },
+        statements: [["block", "link-to", ["stimsets.detail", ["get", "stimset.id", ["loc", [null, [14, 48], [14, 58]]], 0, 0, 0, 0]], [], 0, null, ["loc", [null, [14, 19], [14, 95]]]]],
+        locals: ["stimset"],
+        templates: [child0]
+      };
+    })();
+    return {
+      meta: {
+        "revision": "Ember@2.8.2",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 19,
+            "column": 6
+          }
+        },
+        "moduleName": "stimdb1/templates/creators/detail.hbs"
+      },
+      isEmpty: false,
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createElement("div");
+        dom.setAttribute(el1, "class", "panel panel-default");
+        var el2 = dom.createTextNode("\n\n	");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "panel-heading");
+        var el3 = dom.createTextNode("\n	  ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("h3");
+        dom.setAttribute(el3, "class", "panel-title");
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n	");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n\n	");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "panel-body");
+        var el3 = dom.createTextNode("\n		");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("p");
+        var el4 = dom.createTextNode("Email Address: ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n		");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("p");
+        var el4 = dom.createTextNode("Website: ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("a");
+        var el5 = dom.createComment("");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n		");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("p");
+        var el4 = dom.createTextNode("Source: ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n		");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("p");
+        var el4 = dom.createTextNode("Stimulus Sets:");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n		");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("ul");
+        var el4 = dom.createTextNode("\n");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("        ");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n	");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n\n");
+        dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var element0 = dom.childAt(fragment, [4, 1]);
-        var morphs = new Array(3);
-        morphs[0] = dom.createMorphAt(element0, 1, 1);
-        morphs[1] = dom.createMorphAt(element0, 3, 3);
-        morphs[2] = dom.createMorphAt(fragment, 6, 6, contextualElement);
-        dom.insertBoundary(fragment, null);
+        var element0 = dom.childAt(fragment, [0]);
+        var element1 = dom.childAt(element0, [3]);
+        var element2 = dom.childAt(element1, [3, 1]);
+        var morphs = new Array(6);
+        morphs[0] = dom.createMorphAt(dom.childAt(element0, [1, 1]), 0, 0);
+        morphs[1] = dom.createMorphAt(dom.childAt(element1, [1]), 1, 1);
+        morphs[2] = dom.createAttrMorph(element2, 'href');
+        morphs[3] = dom.createMorphAt(element2, 0, 0);
+        morphs[4] = dom.createMorphAt(dom.childAt(element1, [5]), 1, 1);
+        morphs[5] = dom.createMorphAt(dom.childAt(element1, [9]), 1, 1);
         return morphs;
       },
-      statements: [["block", "link-to", ["creators.listall"], ["tagName", "li"], 0, null, ["loc", [null, [7, 4], [7, 83]]]], ["block", "link-to", ["creators.new"], ["tagName", "li"], 1, null, ["loc", [null, [8, 4], [8, 78]]]], ["content", "outlet", ["loc", [null, [12, 0], [12, 10]]], 0, 0, 0, 0]],
+      statements: [["content", "model.name", ["loc", [null, [4, 27], [4, 41]]], 0, 0, 0, 0], ["content", "model.emailaddress", ["loc", [null, [8, 20], [8, 42]]], 0, 0, 0, 0], ["attribute", "href", ["get", "model.website", ["loc", [null, [9, 24], [9, 37]]], 0, 0, 0, 0], 0, 0, 0, 0], ["content", "model.website", ["loc", [null, [9, 40], [9, 57]]], 0, 0, 0, 0], ["content", "model.creatorSource", ["loc", [null, [10, 13], [10, 36]]], 0, 0, 0, 0], ["block", "each", [["get", "model.stimsets", ["loc", [null, [13, 10], [13, 24]]], 0, 0, 0, 0]], [], 0, null, ["loc", [null, [13, 2], [15, 22]]]]],
       locals: [],
-      templates: [child0, child1]
+      templates: [child0]
     };
   })());
 });
@@ -2571,11 +3073,11 @@ define("stimdb1/templates/creators/listall", ["exports"], function (exports) {
               "loc": {
                 "source": null,
                 "start": {
-                  "line": 24,
+                  "line": 22,
                   "column": 8
                 },
                 "end": {
-                  "line": 24,
+                  "line": 22,
                   "column": 82
                 }
               },
@@ -2605,11 +3107,11 @@ define("stimdb1/templates/creators/listall", ["exports"], function (exports) {
             "loc": {
               "source": null,
               "start": {
-                "line": 22,
+                "line": 20,
                 "column": 6
               },
               "end": {
-                "line": 28,
+                "line": 26,
                 "column": 6
               }
             },
@@ -2643,7 +3145,7 @@ define("stimdb1/templates/creators/listall", ["exports"], function (exports) {
             morphs[1] = dom.createElementMorph(element0);
             return morphs;
           },
-          statements: [["block", "link-to", ["creators.edit", ["get", "creator.id", ["loc", [null, [24, 35], [24, 45]]], 0, 0, 0, 0]], ["class", "btn btn-success btn-xs"], 0, null, ["loc", [null, [24, 8], [24, 94]]]], ["element", "action", ["deleteCreator", ["get", "creator", ["loc", [null, [26, 71], [26, 78]]], 0, 0, 0, 0]], [], ["loc", [null, [26, 46], [26, 80]]], 0, 0]],
+          statements: [["block", "link-to", ["creators.edit", ["get", "creator.id", ["loc", [null, [22, 35], [22, 45]]], 0, 0, 0, 0]], ["class", "btn btn-success btn-xs"], 0, null, ["loc", [null, [22, 8], [22, 94]]]], ["element", "action", ["deleteCreator", ["get", "creator", ["loc", [null, [24, 71], [24, 78]]], 0, 0, 0, 0]], [], ["loc", [null, [24, 46], [24, 80]]], 0, 0]],
           locals: [],
           templates: [child0]
         };
@@ -2654,11 +3156,11 @@ define("stimdb1/templates/creators/listall", ["exports"], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 19,
+              "line": 17,
               "column": 2
             },
             "end": {
-              "line": 32,
+              "line": 30,
               "column": 0
             }
           },
@@ -2690,7 +3192,7 @@ define("stimdb1/templates/creators/listall", ["exports"], function (exports) {
           morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 1, 1);
           return morphs;
         },
-        statements: [["block", "creator-item", [], ["item", ["subexpr", "@mut", [["get", "creator", ["loc", [null, [22, 27], [22, 34]]], 0, 0, 0, 0]], [], [], 0, 0]], 0, null, ["loc", [null, [22, 6], [28, 23]]]]],
+        statements: [["block", "creator-item", [], ["creator", ["subexpr", "@mut", [["get", "creator", ["loc", [null, [20, 30], [20, 37]]], 0, 0, 0, 0]], [], [], 0, 0]], 0, null, ["loc", [null, [20, 6], [26, 23]]]]],
         locals: ["creator"],
         templates: [child0]
       };
@@ -2705,7 +3207,7 @@ define("stimdb1/templates/creators/listall", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 35,
+            "line": 33,
             "column": 0
           }
         },
@@ -2751,19 +3253,7 @@ define("stimdb1/templates/creators/listall", ["exports"], function (exports) {
         var el4 = dom.createTextNode("\n               ");
         dom.appendChild(el3, el4);
         var el4 = dom.createElement("li");
-        var el5 = dom.createTextNode("Clicking a panel should expand or link to a creator detail page");
-        dom.appendChild(el4, el5);
-        dom.appendChild(el3, el4);
-        var el4 = dom.createTextNode("\n               ");
-        dom.appendChild(el3, el4);
-        var el4 = dom.createElement("li");
-        var el5 = dom.createTextNode("Creator preview (here) includes: Name, picture, contact details, list of stimulus sets (maybe with little billboard pictures)");
-        dom.appendChild(el4, el5);
-        dom.appendChild(el3, el4);
-        var el4 = dom.createTextNode("\n               ");
-        dom.appendChild(el3, el4);
-        var el4 = dom.createElement("li");
-        var el5 = dom.createTextNode("Clicking on stimset should link to the stimset detail page");
+        var el5 = dom.createTextNode("Add to creator preview (here): picture of creator, sets (maybe with little billboard pictures?)");
         dom.appendChild(el4, el5);
         dom.appendChild(el3, el4);
         var el4 = dom.createTextNode("\n        ");
@@ -2793,7 +3283,7 @@ define("stimdb1/templates/creators/listall", ["exports"], function (exports) {
         morphs[0] = dom.createMorphAt(dom.childAt(fragment, [4]), 1, 1);
         return morphs;
       },
-      statements: [["block", "each", [["get", "creators", ["loc", [null, [19, 10], [19, 18]]], 0, 0, 0, 0]], [], 0, null, ["loc", [null, [19, 2], [32, 9]]]]],
+      statements: [["block", "each", [["get", "creators", ["loc", [null, [17, 10], [17, 18]]], 0, 0, 0, 0]], [], 0, null, ["loc", [null, [17, 2], [30, 9]]]]],
       locals: [],
       templates: [child0]
     };
@@ -2811,7 +3301,7 @@ define("stimdb1/templates/index", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 13,
+            "line": 14,
             "column": 6
           }
         },
@@ -2830,7 +3320,13 @@ define("stimdb1/templates/index", ["exports"], function (exports) {
         var el1 = dom.createTextNode("\n\n");
         dom.appendChild(el0, el1);
         var el1 = dom.createElement("p");
-        var el2 = dom.createTextNode("Stimdb needs a real name. Miraculously there is a navbar now.");
+        var el2 = dom.createTextNode("This is a mock-up of a searchable database of psychological stimuli. The goal is to provide a front-end view of stimuli stored on the OSF that allows you to search, discover, download, and cite stimuli created by other researchers, and in turn to contribute back information you collect about these stimuli. This will create a centralized resource for well-normed stimuli that support cumulative, interpretable science across different measures, populations & experimental questions.");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("p");
+        var el2 = dom.createTextNode(" We are calling it stimdb for now, but it needs a real name. This mock-up has no real stimuli in it (for now) but models browsing through stimuli and contributors, and eventually searching, downloading, etc. ");
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode(" \n\n");
@@ -3379,11 +3875,11 @@ define("stimdb1/templates/stimsets", ["exports"], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 8,
+              "line": 10,
               "column": 4
             },
             "end": {
-              "line": 8,
+              "line": 10,
               "column": 71
             }
           },
@@ -3417,49 +3913,11 @@ define("stimdb1/templates/stimsets", ["exports"], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 9,
+              "line": 11,
               "column": 4
             },
             "end": {
-              "line": 9,
-              "column": 68
-            }
-          },
-          "moduleName": "stimdb1/templates/stimsets.hbs"
-        },
-        isEmpty: false,
-        arity: 0,
-        cachedFragment: null,
-        hasRendered: false,
-        buildFragment: function buildFragment(dom) {
-          var el0 = dom.createDocumentFragment();
-          var el1 = dom.createElement("a");
-          dom.setAttribute(el1, "href", "");
-          var el2 = dom.createTextNode("Search");
-          dom.appendChild(el1, el2);
-          dom.appendChild(el0, el1);
-          return el0;
-        },
-        buildRenderNodes: function buildRenderNodes() {
-          return [];
-        },
-        statements: [],
-        locals: [],
-        templates: []
-      };
-    })();
-    var child2 = (function () {
-      return {
-        meta: {
-          "revision": "Ember@2.8.2",
-          "loc": {
-            "source": null,
-            "start": {
-              "line": 10,
-              "column": 4
-            },
-            "end": {
-              "line": 10,
+              "line": 11,
               "column": 66
             }
           },
@@ -3497,7 +3955,7 @@ define("stimdb1/templates/stimsets", ["exports"], function (exports) {
           },
           "end": {
             "line": 14,
-            "column": 10
+            "column": 0
           }
         },
         "moduleName": "stimdb1/templates/stimsets.hbs"
@@ -3518,6 +3976,10 @@ define("stimdb1/templates/stimsets", ["exports"], function (exports) {
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n\n\n");
         dom.appendChild(el0, el1);
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n\n");
+        dom.appendChild(el0, el1);
         var el1 = dom.createElement("div");
         dom.setAttribute(el1, "class", "well");
         var el2 = dom.createTextNode("\n  ");
@@ -3532,99 +3994,87 @@ define("stimdb1/templates/stimsets", ["exports"], function (exports) {
         dom.appendChild(el2, el3);
         var el3 = dom.createComment("");
         dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("\n    ");
-        dom.appendChild(el2, el3);
-        var el3 = dom.createComment("");
-        dom.appendChild(el2, el3);
         var el3 = dom.createTextNode("\n  ");
         dom.appendChild(el2, el3);
         dom.appendChild(el1, el2);
         var el2 = dom.createTextNode("\n");
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n\n");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createComment("");
+        var el1 = dom.createTextNode("\n");
         dom.appendChild(el0, el1);
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var element0 = dom.childAt(fragment, [4, 1]);
-        var morphs = new Array(4);
-        morphs[0] = dom.createMorphAt(element0, 1, 1);
-        morphs[1] = dom.createMorphAt(element0, 3, 3);
-        morphs[2] = dom.createMorphAt(element0, 5, 5);
-        morphs[3] = dom.createMorphAt(fragment, 6, 6, contextualElement);
-        dom.insertBoundary(fragment, null);
+        var element0 = dom.childAt(fragment, [6, 1]);
+        var morphs = new Array(3);
+        morphs[0] = dom.createMorphAt(fragment, 4, 4, contextualElement);
+        morphs[1] = dom.createMorphAt(element0, 1, 1);
+        morphs[2] = dom.createMorphAt(element0, 3, 3);
         return morphs;
       },
-      statements: [["block", "link-to", ["stimsets.listall"], ["tagName", "li"], 0, null, ["loc", [null, [8, 4], [8, 83]]]], ["block", "link-to", ["stimsets.search"], ["tagName", "li"], 1, null, ["loc", [null, [9, 4], [9, 80]]]], ["block", "link-to", ["stimsets.new"], ["tagName", "li"], 2, null, ["loc", [null, [10, 4], [10, 78]]]], ["content", "outlet", ["loc", [null, [14, 0], [14, 10]]], 0, 0, 0, 0]],
+      statements: [["content", "outlet", ["loc", [null, [6, 0], [6, 10]]], 0, 0, 0, 0], ["block", "link-to", ["stimsets.listall"], ["tagName", "li"], 0, null, ["loc", [null, [10, 4], [10, 83]]]], ["block", "link-to", ["stimsets.new"], ["tagName", "li"], 1, null, ["loc", [null, [11, 4], [11, 78]]]]],
       locals: [],
-      templates: [child0, child1, child2]
+      templates: [child0, child1]
     };
   })());
 });
-define("stimdb1/templates/stimsets/listall", ["exports"], function (exports) {
+define("stimdb1/templates/stimsets/detail", ["exports"], function (exports) {
   exports["default"] = Ember.HTMLBars.template((function () {
     var child0 = (function () {
-      var child0 = (function () {
-        return {
-          meta: {
-            "revision": "Ember@2.8.2",
-            "loc": {
-              "source": null,
-              "start": {
-                "line": 31,
-                "column": 13
-              },
-              "end": {
-                "line": 33,
-                "column": 13
-              }
-            },
-            "moduleName": "stimdb1/templates/stimsets/listall.hbs"
-          },
-          isEmpty: false,
-          arity: 1,
-          cachedFragment: null,
-          hasRendered: false,
-          buildFragment: function buildFragment(dom) {
-            var el0 = dom.createDocumentFragment();
-            var el1 = dom.createTextNode("               ");
-            dom.appendChild(el0, el1);
-            var el1 = dom.createElement("li");
-            var el2 = dom.createComment("");
-            dom.appendChild(el1, el2);
-            dom.appendChild(el0, el1);
-            var el1 = dom.createTextNode("\n");
-            dom.appendChild(el0, el1);
-            return el0;
-          },
-          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-            var morphs = new Array(1);
-            morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 0, 0);
-            return morphs;
-          },
-          statements: [["content", "stimulus.mediaFilename", ["loc", [null, [32, 19], [32, 45]]], 0, 0, 0, 0]],
-          locals: ["stimulus"],
-          templates: []
-        };
-      })();
       return {
         meta: {
           "revision": "Ember@2.8.2",
           "loc": {
             "source": null,
             "start": {
-              "line": 25,
-              "column": 5
+              "line": 8,
+              "column": 14
             },
             "end": {
-              "line": 37,
-              "column": 5
+              "line": 8,
+              "column": 87
             }
           },
-          "moduleName": "stimdb1/templates/stimsets/listall.hbs"
+          "moduleName": "stimdb1/templates/stimsets/detail.hbs"
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createComment("");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+          dom.insertBoundary(fragment, 0);
+          dom.insertBoundary(fragment, null);
+          return morphs;
+        },
+        statements: [["content", "stimset.creator.name", ["loc", [null, [8, 63], [8, 87]]], 0, 0, 0, 0]],
+        locals: [],
+        templates: []
+      };
+    })();
+    var child1 = (function () {
+      return {
+        meta: {
+          "revision": "Ember@2.8.2",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 13,
+              "column": 2
+            },
+            "end": {
+              "line": 15,
+              "column": 13
+            }
+          },
+          "moduleName": "stimdb1/templates/stimsets/detail.hbs"
         },
         isEmpty: false,
         arity: 1,
@@ -3632,38 +4082,10 @@ define("stimdb1/templates/stimsets/listall", ["exports"], function (exports) {
         hasRendered: false,
         buildFragment: function buildFragment(dom) {
           var el0 = dom.createDocumentFragment();
-          var el1 = dom.createTextNode("       ");
+          var el1 = dom.createTextNode("               ");
           dom.appendChild(el0, el1);
-          var el1 = dom.createElement("tr");
-          var el2 = dom.createTextNode("\n         ");
-          dom.appendChild(el1, el2);
-          var el2 = dom.createElement("td");
-          var el3 = dom.createComment("");
-          dom.appendChild(el2, el3);
-          dom.appendChild(el1, el2);
-          var el2 = dom.createTextNode("\n         ");
-          dom.appendChild(el1, el2);
-          var el2 = dom.createElement("td");
-          var el3 = dom.createComment("");
-          dom.appendChild(el2, el3);
-          dom.appendChild(el1, el2);
-          var el2 = dom.createTextNode("\n         ");
-          dom.appendChild(el1, el2);
-          var el2 = dom.createElement("td");
-          var el3 = dom.createTextNode("\n           ");
-          dom.appendChild(el2, el3);
-          var el3 = dom.createElement("ul");
-          var el4 = dom.createTextNode("\n");
-          dom.appendChild(el3, el4);
-          var el4 = dom.createComment("");
-          dom.appendChild(el3, el4);
-          var el4 = dom.createTextNode("           ");
-          dom.appendChild(el3, el4);
-          dom.appendChild(el2, el3);
-          var el3 = dom.createTextNode("\n         ");
-          dom.appendChild(el2, el3);
-          dom.appendChild(el1, el2);
-          var el2 = dom.createTextNode("\n       ");
+          var el1 = dom.createElement("li");
+          var el2 = dom.createComment("");
           dom.appendChild(el1, el2);
           dom.appendChild(el0, el1);
           var el1 = dom.createTextNode("\n");
@@ -3671,16 +4093,13 @@ define("stimdb1/templates/stimsets/listall", ["exports"], function (exports) {
           return el0;
         },
         buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-          var element0 = dom.childAt(fragment, [1]);
-          var morphs = new Array(3);
-          morphs[0] = dom.createMorphAt(dom.childAt(element0, [1]), 0, 0);
-          morphs[1] = dom.createMorphAt(dom.childAt(element0, [3]), 0, 0);
-          morphs[2] = dom.createMorphAt(dom.childAt(element0, [5, 1]), 1, 1);
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 0, 0);
           return morphs;
         },
-        statements: [["content", "stimset.creator.name", ["loc", [null, [27, 13], [27, 37]]], 0, 0, 0, 0], ["content", "stimset.stimsetname", ["loc", [null, [28, 13], [28, 36]]], 0, 0, 0, 0], ["block", "each", [["get", "stimset.stimuli", ["loc", [null, [31, 21], [31, 36]]], 0, 0, 0, 0]], [], 0, null, ["loc", [null, [31, 13], [33, 22]]]]],
-        locals: ["stimset"],
-        templates: [child0]
+        statements: [["content", "stimulus.mediaFilename", ["loc", [null, [14, 19], [14, 45]]], 0, 0, 0, 0]],
+        locals: ["stimulus"],
+        templates: []
       };
     })();
     return {
@@ -3693,8 +4112,173 @@ define("stimdb1/templates/stimsets/listall", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 39,
-            "column": 9
+            "line": 20,
+            "column": 0
+          }
+        },
+        "moduleName": "stimdb1/templates/stimsets/detail.hbs"
+      },
+      isEmpty: false,
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createElement("div");
+        dom.setAttribute(el1, "class", "panel panel-default");
+        var el2 = dom.createTextNode("\n\n	");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "panel-heading");
+        var el3 = dom.createTextNode("\n	  ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("h3");
+        dom.setAttribute(el3, "class", "panel-title");
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n	");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n\n	");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "panel-body");
+        var el3 = dom.createTextNode("\n		");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("p");
+        var el4 = dom.createTextNode("Creator: ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n		");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("p");
+        var el4 = dom.createTextNode("Citation: ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode(" ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n		");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("p");
+        var el4 = dom.createTextNode("Source: ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n		");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("p");
+        var el4 = dom.createTextNode("Stimuli:");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n		");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("ul");
+        var el4 = dom.createTextNode("\n");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("        ");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n	");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n\n");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var element0 = dom.childAt(fragment, [0]);
+        var element1 = dom.childAt(element0, [3]);
+        var element2 = dom.childAt(element1, [3]);
+        var morphs = new Array(6);
+        morphs[0] = dom.createMorphAt(dom.childAt(element0, [1, 1]), 0, 0);
+        morphs[1] = dom.createMorphAt(dom.childAt(element1, [1]), 1, 1);
+        morphs[2] = dom.createMorphAt(element2, 1, 1);
+        morphs[3] = dom.createMorphAt(element2, 3, 3);
+        morphs[4] = dom.createMorphAt(dom.childAt(element1, [5]), 1, 1);
+        morphs[5] = dom.createMorphAt(dom.childAt(element1, [9]), 1, 1);
+        return morphs;
+      },
+      statements: [["content", "stimset.stimsetname", ["loc", [null, [4, 27], [4, 50]]], 0, 0, 0, 0], ["block", "link-to", ["creators.detail", ["get", "stimset.creator.id", ["loc", [null, [8, 43], [8, 61]]], 0, 0, 0, 0]], [], 0, null, ["loc", [null, [8, 14], [8, 99]]]], ["content", "stimset.citation", ["loc", [null, [9, 15], [9, 35]]], 0, 0, 0, 0], ["content", "stimset.doi", ["loc", [null, [9, 36], [9, 51]]], 0, 0, 0, 0], ["content", "stimset.setSource", ["loc", [null, [10, 13], [10, 34]]], 0, 0, 0, 0], ["block", "each", [["get", "stimset.stimuli", ["loc", [null, [13, 10], [13, 25]]], 0, 0, 0, 0]], [], 1, null, ["loc", [null, [13, 2], [15, 22]]]]],
+      locals: [],
+      templates: [child0, child1]
+    };
+  })());
+});
+define("stimdb1/templates/stimsets/listall", ["exports"], function (exports) {
+  exports["default"] = Ember.HTMLBars.template((function () {
+    var child0 = (function () {
+      return {
+        meta: {
+          "revision": "Ember@2.8.2",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 15,
+              "column": 2
+            },
+            "end": {
+              "line": 19,
+              "column": 2
+            }
+          },
+          "moduleName": "stimdb1/templates/stimsets/listall.hbs"
+        },
+        isEmpty: false,
+        arity: 1,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("    ");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("div");
+          dom.setAttribute(el1, "class", "col-md-4");
+          var el2 = dom.createTextNode("\n      ");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createComment("");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("\n    ");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 1, 1);
+          return morphs;
+        },
+        statements: [["inline", "stimset-item", [], ["stimset", ["subexpr", "@mut", [["get", "stimset", ["loc", [null, [17, 29], [17, 36]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [17, 6], [17, 38]]], 0, 0]],
+        locals: ["stimset"],
+        templates: []
+      };
+    })();
+    return {
+      meta: {
+        "revision": "Ember@2.8.2",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 20,
+            "column": 6
           }
         },
         "moduleName": "stimdb1/templates/stimsets/listall.hbs"
@@ -3729,25 +4313,7 @@ define("stimdb1/templates/stimsets/listall", ["exports"], function (exports) {
         var el4 = dom.createTextNode("\n               ");
         dom.appendChild(el3, el4);
         var el4 = dom.createElement("li");
-        var el5 = dom.createTextNode("Implement 'preview' panel view in place of list' (like creators)");
-        dom.appendChild(el4, el5);
-        dom.appendChild(el3, el4);
-        var el4 = dom.createTextNode("\n               ");
-        dom.appendChild(el3, el4);
-        var el4 = dom.createElement("li");
-        var el5 = dom.createTextNode("Preview includes: Name, creator/citation, 'billboard image' for stimset, text links to sample stimuli (e.g. dog.mp3, cat.mp3, bird.mp3...");
-        dom.appendChild(el4, el5);
-        dom.appendChild(el3, el4);
-        var el4 = dom.createTextNode("\n               ");
-        dom.appendChild(el3, el4);
-        var el4 = dom.createElement("li");
-        var el5 = dom.createTextNode("Clicking on creator should link to creator detail page");
-        dom.appendChild(el4, el5);
-        dom.appendChild(el3, el4);
-        var el4 = dom.createTextNode("\n               ");
-        dom.appendChild(el3, el4);
-        var el4 = dom.createElement("li");
-        var el5 = dom.createTextNode("Clicking on stimset should link to stimset detail page");
+        var el5 = dom.createTextNode("Add to preview: 'billboard image' for stimset, text links to sample stimuli (e.g. dog.mp3, cat.mp3, bird.mp3...");
         dom.appendChild(el4, el5);
         dom.appendChild(el3, el4);
         var el4 = dom.createTextNode("\n               ");
@@ -3765,61 +4331,23 @@ define("stimdb1/templates/stimsets/listall", ["exports"], function (exports) {
         var el2 = dom.createTextNode("\n");
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n\n ");
+        var el1 = dom.createTextNode("\n\n\n ");
         dom.appendChild(el0, el1);
-        var el1 = dom.createElement("table");
-        dom.setAttribute(el1, "class", "table table-bordered table-striped");
-        var el2 = dom.createTextNode("\n   ");
+        var el1 = dom.createElement("div");
+        dom.setAttribute(el1, "class", "row");
+        var el2 = dom.createTextNode("\n");
         dom.appendChild(el1, el2);
-        var el2 = dom.createElement("thead");
-        var el3 = dom.createTextNode("\n     ");
-        dom.appendChild(el2, el3);
-        var el3 = dom.createElement("tr");
-        var el4 = dom.createTextNode("\n       ");
-        dom.appendChild(el3, el4);
-        var el4 = dom.createElement("th");
-        var el5 = dom.createTextNode("Creator");
-        dom.appendChild(el4, el5);
-        dom.appendChild(el3, el4);
-        var el4 = dom.createTextNode("\n       ");
-        dom.appendChild(el3, el4);
-        var el4 = dom.createElement("th");
-        var el5 = dom.createTextNode("Stimulus set name");
-        dom.appendChild(el4, el5);
-        dom.appendChild(el3, el4);
-        var el4 = dom.createTextNode("\n       ");
-        dom.appendChild(el3, el4);
-        var el4 = dom.createElement("th");
-        var el5 = dom.createTextNode("Stimuli");
-        dom.appendChild(el4, el5);
-        dom.appendChild(el3, el4);
-        var el4 = dom.createTextNode("\n     ");
-        dom.appendChild(el3, el4);
-        dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("\n   ");
-        dom.appendChild(el2, el3);
-        dom.appendChild(el1, el2);
-        var el2 = dom.createTextNode("\n   ");
-        dom.appendChild(el1, el2);
-        var el2 = dom.createElement("tbody");
-        var el3 = dom.createTextNode("\n");
-        dom.appendChild(el2, el3);
-        var el3 = dom.createComment("");
-        dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("   ");
-        dom.appendChild(el2, el3);
-        dom.appendChild(el1, el2);
-        var el2 = dom.createTextNode("\n ");
+        var el2 = dom.createComment("");
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
         var morphs = new Array(1);
-        morphs[0] = dom.createMorphAt(dom.childAt(fragment, [4, 3]), 1, 1);
+        morphs[0] = dom.createMorphAt(dom.childAt(fragment, [4]), 1, 1);
         return morphs;
       },
-      statements: [["block", "each", [["get", "stimsets", ["loc", [null, [25, 13], [25, 21]]], 0, 0, 0, 0]], [], 0, null, ["loc", [null, [25, 5], [37, 14]]]]],
+      statements: [["block", "each", [["get", "stimsets", ["loc", [null, [15, 10], [15, 18]]], 0, 0, 0, 0]], [], 0, null, ["loc", [null, [15, 2], [19, 11]]]]],
       locals: [],
       templates: [child0]
     };
@@ -3914,91 +4442,6 @@ define("stimdb1/templates/stimsets/new", ["exports"], function (exports) {
     };
   })());
 });
-define("stimdb1/templates/stimsets/search", ["exports"], function (exports) {
-  exports["default"] = Ember.HTMLBars.template((function () {
-    return {
-      meta: {
-        "revision": "Ember@2.8.2",
-        "loc": {
-          "source": null,
-          "start": {
-            "line": 1,
-            "column": 0
-          },
-          "end": {
-            "line": 12,
-            "column": 0
-          }
-        },
-        "moduleName": "stimdb1/templates/stimsets/search.hbs"
-      },
-      isEmpty: false,
-      arity: 0,
-      cachedFragment: null,
-      hasRendered: false,
-      buildFragment: function buildFragment(dom) {
-        var el0 = dom.createDocumentFragment();
-        var el1 = dom.createElement("div");
-        dom.setAttribute(el1, "class", "panel panel-default");
-        var el2 = dom.createTextNode("\n  ");
-        dom.appendChild(el1, el2);
-        var el2 = dom.createElement("div");
-        dom.setAttribute(el2, "class", "panel-body");
-        var el3 = dom.createTextNode("\n    ");
-        dom.appendChild(el2, el3);
-        var el3 = dom.createElement("p");
-        var el4 = dom.createTextNode("TO DO ITEMS");
-        dom.appendChild(el3, el4);
-        dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("\n    ");
-        dom.appendChild(el2, el3);
-        var el3 = dom.createElement("ul");
-        var el4 = dom.createTextNode("\n               ");
-        dom.appendChild(el3, el4);
-        var el4 = dom.createElement("li");
-        var el5 = dom.createTextNode("Implement simple search!");
-        dom.appendChild(el4, el5);
-        dom.appendChild(el3, el4);
-        var el4 = dom.createTextNode("\n               ");
-        dom.appendChild(el3, el4);
-        var el4 = dom.createElement("li");
-        var el5 = dom.createTextNode("Eventually, should be able to have multiple filters to e.g. animated stimuli, event stimuli. This is a subset of all properties!!");
-        dom.appendChild(el4, el5);
-        dom.appendChild(el3, el4);
-        var el4 = dom.createTextNode("\n               ");
-        dom.appendChild(el3, el4);
-        var el4 = dom.createElement("li");
-        var el5 = dom.createTextNode("For now, this should just match stimuli that have the searched word in...filename, what else?");
-        dom.appendChild(el4, el5);
-        dom.appendChild(el3, el4);
-        var el4 = dom.createTextNode("\n               ");
-        dom.appendChild(el3, el4);
-        var el4 = dom.createElement("li");
-        var el5 = dom.createTextNode("To think about: search should pull up both stim sets and individual stimuli");
-        dom.appendChild(el4, el5);
-        dom.appendChild(el3, el4);
-        var el4 = dom.createTextNode("\n        ");
-        dom.appendChild(el3, el4);
-        dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("\n  ");
-        dom.appendChild(el2, el3);
-        dom.appendChild(el1, el2);
-        var el2 = dom.createTextNode("\n");
-        dom.appendChild(el1, el2);
-        dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n");
-        dom.appendChild(el0, el1);
-        return el0;
-      },
-      buildRenderNodes: function buildRenderNodes() {
-        return [];
-      },
-      statements: [],
-      locals: [],
-      templates: []
-    };
-  })());
-});
 define('stimdb1/torii-providers/firebase', ['exports', 'emberfire/torii-providers/firebase'], function (exports, _emberfireToriiProvidersFirebase) {
   exports['default'] = _emberfireToriiProvidersFirebase['default'];
 });
@@ -4038,7 +4481,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("stimdb1/app")["default"].create({"name":"stimdb1","version":"0.0.0+4f4a4cb8"});
+  require("stimdb1/app")["default"].create({"name":"stimdb1","version":"0.0.0+9f7ddf24"});
 }
 
 /* jshint ignore:end */

@@ -6,9 +6,7 @@
     <ul>
                <li>Clarify that this is fake data</li>
                <li>Make the panels stack in a less ugly way!</li>
-               <li>Clicking a panel should expand or link to a creator detail page</li>
-               <li>Creator preview (here) includes: Name, picture, contact details, list of stimulus sets (maybe with little billboard pictures)</li>
-               <li>Clicking on stimset should link to the stimset detail page</li>
+               <li>Add to creator preview (here): picture of creator, sets (maybe with little billboard pictures?)</li>
         </ul>
   </div>
 </div>
@@ -19,7 +17,7 @@
   {{#each creators as |creator|}}
     <div class="col-md-4">
 
-      {{#creator-item item=creator}}
+      {{#creator-item creator=creator}}
 
         {{#link-to 'creators.edit' creator.id class='btn btn-success btn-xs'}}Edit{{/link-to}}
 

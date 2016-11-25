@@ -21,6 +21,8 @@ export default DS.Model.extend({
   	this.set('stimset', stimset);
   	this.set('stimSource', 'faker generated');
 
+    //save back to the stimset
+
   	return this; //not sure why needed yet
 
   }

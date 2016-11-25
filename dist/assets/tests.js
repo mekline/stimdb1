@@ -63,6 +63,15 @@ define('stimdb1/tests/components/seeder-block.jshint', ['exports'], function (ex
     assert.ok(true, 'components/seeder-block.js should pass jshint.');
   });
 });
+define('stimdb1/tests/components/stimset-item.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | components/stimset-item.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'components/stimset-item.js should pass jshint.');
+  });
+});
 define('stimdb1/tests/controllers/admin/seeder.jshint', ['exports'], function (exports) {
   'use strict';
 
@@ -1041,6 +1050,146 @@ define('stimdb1/tests/integration/components/seeder-block-test.jshint', ['export
     assert.ok(true, 'integration/components/seeder-block-test.js should pass jshint.');
   });
 });
+define('stimdb1/tests/integration/components/stimset-item-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
+
+  (0, _emberQunit.moduleForComponent)('stimset-item', 'Integration | Component | stimset item', {
+    integration: true
+  });
+
+  (0, _emberQunit.test)('it renders', function (assert) {
+    // Set any properties with this.set('myProperty', 'value');
+    // Handle any actions with this.on('myAction', function(val) { ... });
+
+    this.render(Ember.HTMLBars.template((function () {
+      return {
+        meta: {
+          'revision': 'Ember@2.8.2',
+          'loc': {
+            'source': null,
+            'start': {
+              'line': 1,
+              'column': 0
+            },
+            'end': {
+              'line': 1,
+              'column': 16
+            }
+          }
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createComment('');
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+          dom.insertBoundary(fragment, 0);
+          dom.insertBoundary(fragment, null);
+          return morphs;
+        },
+        statements: [['content', 'stimset-item', ['loc', [null, [1, 0], [1, 16]]], 0, 0, 0, 0]],
+        locals: [],
+        templates: []
+      };
+    })()));
+
+    assert.equal(this.$().text().trim(), '');
+
+    // Template block usage:
+    this.render(Ember.HTMLBars.template((function () {
+      var child0 = (function () {
+        return {
+          meta: {
+            'revision': 'Ember@2.8.2',
+            'loc': {
+              'source': null,
+              'start': {
+                'line': 2,
+                'column': 4
+              },
+              'end': {
+                'line': 4,
+                'column': 4
+              }
+            }
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode('      template block text\n');
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes() {
+            return [];
+          },
+          statements: [],
+          locals: [],
+          templates: []
+        };
+      })();
+
+      return {
+        meta: {
+          'revision': 'Ember@2.8.2',
+          'loc': {
+            'source': null,
+            'start': {
+              'line': 1,
+              'column': 0
+            },
+            'end': {
+              'line': 5,
+              'column': 2
+            }
+          }
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode('\n');
+          dom.appendChild(el0, el1);
+          var el1 = dom.createComment('');
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode('  ');
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+          return morphs;
+        },
+        statements: [['block', 'stimset-item', [], [], 0, null, ['loc', [null, [2, 4], [4, 21]]]]],
+        locals: [],
+        templates: [child0]
+      };
+    })()));
+
+    assert.equal(this.$().text().trim(), 'template block text');
+  });
+});
+define('stimdb1/tests/integration/components/stimset-item-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | integration/components/stimset-item-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'integration/components/stimset-item-test.js should pass jshint.');
+  });
+});
 define('stimdb1/tests/models/creator.jshint', ['exports'], function (exports) {
   'use strict';
 
@@ -1140,6 +1289,15 @@ define('stimdb1/tests/routes/contact.jshint', ['exports'], function (exports) {
     assert.ok(true, 'routes/contact.js should pass jshint.');
   });
 });
+define('stimdb1/tests/routes/creators/detail.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | routes/creators/detail.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'routes/creators/detail.js should pass jshint.');
+  });
+});
 define('stimdb1/tests/routes/creators/edit.jshint', ['exports'], function (exports) {
   'use strict';
 
@@ -1167,6 +1325,15 @@ define('stimdb1/tests/routes/creators/new.jshint', ['exports'], function (export
     assert.ok(true, 'routes/creators/new.js should pass jshint.');
   });
 });
+define('stimdb1/tests/routes/stimsets/detail.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | routes/stimsets/detail.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'routes/stimsets/detail.js should pass jshint.');
+  });
+});
 define('stimdb1/tests/routes/stimsets/listall.jshint', ['exports'], function (exports) {
   'use strict';
 
@@ -1183,15 +1350,6 @@ define('stimdb1/tests/routes/stimsets/new.jshint', ['exports'], function (export
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'routes/stimsets/new.js should pass jshint.');
-  });
-});
-define('stimdb1/tests/routes/stimsets/search.jshint', ['exports'], function (exports) {
-  'use strict';
-
-  QUnit.module('JSHint | routes/stimsets/search.js');
-  QUnit.test('should pass jshint', function (assert) {
-    assert.expect(1);
-    assert.ok(true, 'routes/stimsets/search.js should pass jshint.');
   });
 });
 define('stimdb1/tests/test-helper', ['exports', 'stimdb1/tests/helpers/resolver', 'ember-qunit'], function (exports, _stimdb1TestsHelpersResolver, _emberQunit) {
@@ -1445,6 +1603,48 @@ define('stimdb1/tests/unit/routes/contact-test.jshint', ['exports'], function (e
     assert.ok(true, 'unit/routes/contact-test.js should pass jshint.');
   });
 });
+define('stimdb1/tests/unit/routes/creators/detail-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
+
+  (0, _emberQunit.moduleFor)('route:creators/detail', 'Unit | Route | creators/detail', {
+    // Specify the other units that are required for this test.
+    // needs: ['controller:foo']
+  });
+
+  (0, _emberQunit.test)('it exists', function (assert) {
+    var route = this.subject();
+    assert.ok(route);
+  });
+});
+define('stimdb1/tests/unit/routes/creators/detail-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | unit/routes/creators/detail-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/routes/creators/detail-test.js should pass jshint.');
+  });
+});
+define('stimdb1/tests/unit/routes/stimsets/detail-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
+
+  (0, _emberQunit.moduleFor)('route:stimsets/detail', 'Unit | Route | stimsets/detail', {
+    // Specify the other units that are required for this test.
+    // needs: ['controller:foo']
+  });
+
+  (0, _emberQunit.test)('it exists', function (assert) {
+    var route = this.subject();
+    assert.ok(route);
+  });
+});
+define('stimdb1/tests/unit/routes/stimsets/detail-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | unit/routes/stimsets/detail-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/routes/stimsets/detail-test.js should pass jshint.');
+  });
+});
 define('stimdb1/tests/unit/routes/stimsets/listall-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
 
   (0, _emberQunit.moduleFor)('route:stimsets/listall', 'Unit | Route | stimsets/listall', {
@@ -1485,27 +1685,6 @@ define('stimdb1/tests/unit/routes/stimsets/new-test.jshint', ['exports'], functi
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'unit/routes/stimsets/new-test.js should pass jshint.');
-  });
-});
-define('stimdb1/tests/unit/routes/stimsets/search-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
-
-  (0, _emberQunit.moduleFor)('route:stimsets/search', 'Unit | Route | stimsets/search', {
-    // Specify the other units that are required for this test.
-    // needs: ['controller:foo']
-  });
-
-  (0, _emberQunit.test)('it exists', function (assert) {
-    var route = this.subject();
-    assert.ok(route);
-  });
-});
-define('stimdb1/tests/unit/routes/stimsets/search-test.jshint', ['exports'], function (exports) {
-  'use strict';
-
-  QUnit.module('JSHint | unit/routes/stimsets/search-test.js');
-  QUnit.test('should pass jshint', function (assert) {
-    assert.expect(1);
-    assert.ok(true, 'unit/routes/stimsets/search-test.js should pass jshint.');
   });
 });
 /* jshint ignore:start */

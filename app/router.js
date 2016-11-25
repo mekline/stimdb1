@@ -19,12 +19,13 @@ Router.map(function() {
     this.route('new');
     this.route('listall');
     this.route('edit', { path: '/:creator_id/edit' });
+    this.route('detail', {path: '/:creator_id/detail'});
   });
 
   this.route('stimsets', function() {
     this.route('new');
     this.route('listall');
-    this.route('search');
+    this.route('detail', {path: '/:stimset_id/detail'});
   });
 
 });

@@ -1,0 +1,19 @@
+<div class="panel panel-default">
+
+	<div class="panel-heading">
+	  <h3 class="panel-title">{{stimset.stimsetname}}</h3>
+	</div>
+
+	<div class="panel-body">
+		<p>Creator: {{#link-to 'creators.detail' stimset.creator.id}}{{stimset.creator.name}}{{/link-to}}</p>
+		<p>Citation: {{stimset.citation}} {{stimset.doi}}</p>
+		<p>Source: {{stimset.setSource}}</p>
+		<p>Stimuli:</p>
+		<ul>
+		{{#each stimset.stimuli as |stimulus|}}
+               <li>{{stimulus.mediaFilename}}</li>
+             {{/each}}
+        </ul>
+	</div>
+
+</div>

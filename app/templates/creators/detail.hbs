@@ -1,0 +1,19 @@
+<div class="panel panel-default">
+
+	<div class="panel-heading">
+	  <h3 class="panel-title">{{model.name}}</h3>
+	</div>
+
+	<div class="panel-body">
+		<p>Email Address: {{model.emailaddress}}</p>
+		<p>Website: <a href={{model.website}}>{{model.website}}</a></p>
+		<p>Source: {{model.creatorSource}}</p>
+		<p>Stimulus Sets:</p>
+		<ul>
+		{{#each model.stimsets as |stimset|}}
+               <li>{{#link-to 'stimsets.detail' stimset.id}}{{stimset.stimsetname}}{{/link-to}}</li>
+             {{/each}}
+        </ul>
+	</div>
+
+</div>

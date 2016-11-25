@@ -1,6 +1,6 @@
 import { moduleFor, test } from 'ember-qunit';
 
-moduleFor('route:stimsets/search', 'Unit | Route | stimsets/search', {
+moduleFor('route:creators/detail', 'Unit | Route | creators/detail', {
   // Specify the other units that are required for this test.
   // needs: ['controller:foo']
 });

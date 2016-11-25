@@ -1,17 +1,14 @@
 <div class="panel panel-default creator-item">
 
 	<div class="panel-heading">
-	  <h3 class="panel-title">{{item.name}}</h3>
+	  <h3 class="panel-title">{{#link-to 'creators.detail' creator.id}}{{creator.name}}{{/link-to}}</h3>
 	</div>
 
 	<div class="panel-body">
-		<p>Email Address: {{item.emailaddress}}</p>
-		<p>Website: <a href={{item.website}}>{{item.website}}</a></p>
-		<p>Source: {{item.creatorSource}}</p>
-		<p>Stimulus Sets:</p>
+		<p>{{creator.emailaddress}}</p>
 		<ul>
-		{{#each item.stimsets as |stimset|}}
-               <li>{{stimset.stimsetname}}</li>
+		{{#each creator.stimsets as |stimset|}}
+               <li>{{#link-to 'stimsets.detail' stimset.id}}{{stimset.stimsetname}}{{/link-to}}</li>
              {{/each}}
         </ul>
 	</div>

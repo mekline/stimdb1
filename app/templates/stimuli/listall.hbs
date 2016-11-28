@@ -1,0 +1,18 @@
+<p>only fake ones!</p>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <p>TO DO ITEMS</p>
+    <ul> It's the stimuli list page
+        </ul>
+  </div>
+</div>
+
+
+ <div class="row">
+  {{#each stimuli as |stimulus|}}
+    <div class="col-md-4">
+      {{stimulus-item stimulus=stimulus}}
+    </div>
+  {{/each}}
+</div>

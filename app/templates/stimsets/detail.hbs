@@ -11,7 +11,7 @@
 		<p>Stimuli:</p>
 		<ul>
 		{{#each stimset.stimuli as |stimulus|}}
-               <li>{{stimulus.mediaFilename}}</li>
+               <li>{{#link-to 'stimuli.detail' stimulus.id}}{{stimulus.mediaFilename}}{{/link-to}}</li>
              {{/each}}
         </ul>
 	</div>

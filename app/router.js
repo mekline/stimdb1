@@ -28,6 +28,10 @@ Router.map(function() {
     this.route('detail', {path: '/:stimset_id/detail'});
   });
 
+  this.route('stimuli', function() {
+    this.route('listall');
+    this.route('detail', {path: '/:stimulus_id/detail'});
+  });
 });
 
 export default Router;

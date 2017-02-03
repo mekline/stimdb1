@@ -1,1 +1,0 @@
-/Users/mekline/Dropbox/_Projects/Open Stimulus Project/stimdb1/stimdb1/tmp/funnel-input_base_path-GQDwRV9B.tmp/0/-private/instance-initializers/initialize-store-service.js

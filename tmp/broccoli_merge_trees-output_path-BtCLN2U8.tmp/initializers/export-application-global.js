@@ -1,1 +1,0 @@
-/Users/mekline/Dropbox/_Projects/Open Stimulus Project/stimdb1/stimdb1/tmp/broccoli_merge_trees-input_base_path-1RB39E9a.tmp/18/initializers/export-application-global.js

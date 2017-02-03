@@ -1,1 +1,0 @@
-/Users/mekline/Dropbox/_Projects/Open Stimulus Project/stimdb1/stimdb1/tmp/broccoli_merge_trees-input_base_path-eVaBIk7P.tmp/0/modules/ember-cli-app-version/initializer-factory.js

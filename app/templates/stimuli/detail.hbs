@@ -4,8 +4,11 @@
 	  <h3 class="panel-title">{{model.stimname}}</h3>
 	</div>
 
-	<div class="panel-body">
-		<p>Picture of the stim goes here </p>
+	<div class="panel-body-detail">
+	
+		{{ember-youtube ytid=model.ytLink}}
+
+		<p><a href = {{model.mediaFilename}}>Right click to download original video</a> </p>
 		<p>Stimulus set: {{#link-to 'stimsets.detail' model.stimset.id}}{{model.stimset.stimsetname}}{{/link-to}}</p>
 		<p>Source: {{model.stimSource}}</p>
 		<p>Maker: {{#link-to 'creators.detail' model.stimset.creator.id}}{{model.stimset.creator.name}}{{/link-to}}</p>

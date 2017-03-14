@@ -9,7 +9,7 @@
 		<p>{{stimset.doi}}</p>
 		<ul>
              {{#each stimset.stimuli as |stimulus|}}
-               <li>{{#link-to 'stimuli.detail' stimulus.id}}{{stimulus.mediaFilename}}{{/link-to}}</li>
+               <li class="panel-li">{{#link-to 'stimuli.detail' stimulus.id}}{{stimulus.stimname}}{{/link-to}}</li>
              {{/each}} 
          </ul>
 	</div>

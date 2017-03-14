@@ -9,6 +9,7 @@ inflector.irregular('stimulus','stimuli');
 export default DS.Model.extend({
   stimname: DS.attr('string'),
   mediaFilename: DS.attr('string'),
+  ytLink: DS.attr('string'),
   stimSource: DS.attr('string'), //record whether this is a fake thing!
   
   stimset: DS.belongsTo('stimset'),

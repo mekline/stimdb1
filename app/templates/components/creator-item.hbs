@@ -5,7 +5,8 @@
 	</div>
 
 	<div class="panel-body">
-		<p>{{creator.emailaddress}}</p>
+		<p>Website: <a href={{creator.website}}>{{creator.website}}</a></p>
+		<p>Stimulus Sets:</p>
 		<ul>
 		{{#each creator.stimsets as |stimset|}}
                <li>{{#link-to 'stimsets.detail' stimset.id}}{{stimset.stimsetname}}{{/link-to}}</li>

@@ -32,6 +32,10 @@ Router.map(function() {
     this.route('listall');
     this.route('detail', {path: '/:stimulus_id/detail'});
   });
+
+  this.route('forms', function() {
+    this.route('basicform');
+  });
 });
 
 export default Router;

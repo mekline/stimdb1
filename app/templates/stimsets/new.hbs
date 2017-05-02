@@ -10,3 +10,15 @@
         </ul>
   </div>
 </div>
+
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <p> here is text </p>
+    <p> {{#form-for stimset as |s|}}
+      here is some text {{s.text-field "stimsetname"}}
+      {{s.submit "create new stimulus set"}}
+    {{/form-for}} </p>
+
+  </div>
+</div>

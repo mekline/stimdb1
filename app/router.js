@@ -33,9 +33,7 @@ Router.map(function() {
     this.route('detail', {path: '/:stimulus_id/detail'});
   });
 
-  this.route('forms', function() {
-    this.route('basicform');
-  });
+  this.route('forms', function() {});
 });
 
 export default Router;
